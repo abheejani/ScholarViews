@@ -1,12 +1,11 @@
 Dev Notes: 
 
-# To Run 
-- python run.py 
-- open localhost link
+# Virtual Environment
+- python -m venv venv
+- venv\Scripts\activate
 
-# Config
-- pip install flask-login 
-- pip install flask-migrate
+# Pip install Flask apps 
+- pip install flask flask_sqlalchemy flask-migrate flask-login
 
 # Set Flask app location 
 - Mac/Linux 
@@ -20,3 +19,7 @@ Dev Notes:
 - flask db init
 - flask db migrate -m "create user table"
 - flask db upgrade
+
+# To Run 
+- python run.py 
+- open localhost link

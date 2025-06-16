@@ -1,5 +1,7 @@
+from flask import Flask
+from flask_migrate import Migrate
 from flask_login import LoginManager
-from .models.user import User
+from .models.user import db, User
 
 login_manager = LoginManager()
 
