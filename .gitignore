@@ -1,11 +1,26 @@
+# Virtual environment
 venv/
+
+# Python cache and compiled files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Database files
 *.db
+instance/*.db
 *.sqlite3
+
+# Logs and environment files
 *.log
 *.env
+
+# OS files
 *.DS_Store
+
+# Migration caches
+migrations/__pycache__/
+
+# Specifically named local DB (optional, already covered above)
 local.db

@@ -3,9 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <title>ScholarViews</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .sign-in, .user-button {
+            font-size: 1em;
+            text-decoration: none;
+            color: white;
+            background-color: #3498db;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .sign-in:hover, .user-button:hover {
+            background-color: #2980b9;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: white;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none;
+            z-index: 1001;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: red;
+        }
+
+        .dropdown a:hover {
+            background-color: #f4f4f4;
+        }
+
+        .user-wrapper:hover .dropdown {
+            display: block;
+        }
+
+        main {
+            padding: 40px 20px;
+            background-color: #f4f4f4;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
+
+<header>
+    <div class="logo">ScholarViews</div>
+
+    {% if current_user.is_authenticated %}
+    <div class="user-wrapper" style="position: relative;">
+        <div class="user-button">Hi, {{ current_user.username }}</div>
+        <div class="dropdown">
+            <a href="{{ url_for('auth.logout') }}">Log Out</a>
+        </div>
+    </div>
+    {% else %}
+        <a href="{{ url_for('auth.login') }}" class="sign-in">Sign In</a>
+    {% endif %}
+</header>
+
+<main>
     <h1>Hello, ScholarViews!</h1>
-    <p>Brand new stuff goin on here</p>
+</main>
+
 </body>
 </html>

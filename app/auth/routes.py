@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app import db
 from app.models.user import User
-from flask_login import login_user
+from flask_login import login_user, login_required, logout_user
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -9,20 +9,36 @@ auth_bp = Blueprint('auth', __name__)
 def signup():
     if request.method == 'POST':
         username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
+        confirm = request.form['confirm_password']
 
         if User.query.filter_by(username=username).first():
-            flash('Username already exists')
+            flash('Username already exists.')
             return redirect(url_for('auth.signup'))
 
-        user = User(username=username)
+        if User.query.filter_by(email=email).first():
+            flash('Email already exists.')
+            return redirect(url_for('auth.signup'))
+
+        if password != confirm:
+            flash('Passwords do not match.')
+            return redirect(url_for('auth.signup'))
+
+        if len(password) < 8 or " " in password or not any(c.isdigit() for c in password) or not any(not c.isalnum() for c in password):
+            flash('Password does not meet requirements.')
+            return redirect(url_for('auth.signup'))
+
+        user = User(username=username, email=email)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
-        flash('Signup successful. Please log in.')
+
+        flash("Signup successful. Please log in.", "success")
         return redirect(url_for('auth.login'))
 
-    return render_template('signup.html')
+    return render_template('login_page/signup.html')
+
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -34,9 +50,17 @@ def login():
         if user and user.check_password(password):
             login_user(user)
             flash('Logged in successfully!')
-            return redirect(url_for('main.home'))
+            return redirect(url_for('main.home'))  # Redirect to home
         else:
-            flash('Invalid credentials')
-            return redirect(url_for('auth.login'))
+            flash('Invalid username or password')  # Show this in red on the page
+            return redirect(url_for('auth.login'))  # Re-render the same route
 
-    return render_template('login.html')
+    return render_template('login_page/login.html')
+
+@auth_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.')
+    return redirect(url_for('main.home'))
+
