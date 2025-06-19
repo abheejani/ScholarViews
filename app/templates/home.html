@@ -46,7 +46,7 @@
 
         .dropdown {
             position: absolute;
-            top: 40px;
+            top: 100%; /* Aligns just under the user button */
             right: 0;
             background-color: white;
             color: #333;
@@ -54,6 +54,11 @@
             border-radius: 5px;
             display: none;
             z-index: 1001;
+        }
+
+        .user-wrapper:hover .dropdown,
+        .dropdown:hover {
+            display: block;
         }
 
         .dropdown a {

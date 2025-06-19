@@ -57,7 +57,14 @@
 					{% with messages = get_flashed_messages(with_categories=true) %}
 					{% if messages %}
 						{% for category, message in messages %}
-						<div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}" style="text-align: center; margin: 30px 0 20px 0;">
+						{% set alert_class = {
+							'success': 'success',
+							'error': 'danger',
+							'danger': 'danger',
+							'warning': 'warning',
+							'info': 'info'
+						}.get(category, 'secondary') %}
+						<div class="alert alert-{{ alert_class }}">
 							{{ message }}
 						</div>
 						{% endfor %}

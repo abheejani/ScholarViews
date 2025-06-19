@@ -49,7 +49,6 @@ def login():
 
         if user and user.check_password(password):
             login_user(user)
-            flash('Logged in successfully!')
             return redirect(url_for('main.home'))  # Redirect to home
         else:
             flash('Invalid username or password')  # Show this in red on the page
@@ -61,6 +60,6 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('You have been logged out.')
+    flash('You have been logged out.', 'info')
     return redirect(url_for('main.home'))
 
