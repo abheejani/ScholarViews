@@ -22,11 +22,7 @@
 <body>
 	
 	<div class="limiter">
-		<style>
-    .container-login100 {
-        background-image: url("{{ url_for('static', filename='login_page/images/bg-01.jpg') }}");
-   	 }
-			</style>
+		<div class="container-login100" style="background-image: url('{{ url_for('static', filename='login_page/images/bg-01.jpg') }}');">
 			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
 				<form class="login100-form validate-form" method="POST" action="{{ url_for('auth.login') }}">
 					<span class="login100-form-title p-b-49">
@@ -67,7 +63,6 @@
 						{% endfor %}
 					{% endif %}
 					{% endwith %}
-
 
 					<div class="flex-col-c p-t-155">
 						<a href="{{ url_for('auth.signup') }}" class="txt2">Sign Up</a>
