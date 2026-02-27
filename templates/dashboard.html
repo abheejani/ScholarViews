@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        /* Add your styling here */
+        /* ... */
+
+        .intro-paragraphs {
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+            line-height: 1.6;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ecf0f1;
+            font-size: 18px;
+            margin-top: 40px;
+            color: #333; /* Text color */
+        }
+
+        .intro-motto {
+            max-width: 600px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            color: #3498db; /* Motto color */
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            overflow-y: scroll;
+        }
+
+        h1 {
+            color: #3498db;
+            margin-bottom: 20px;
+            font-size: 40px;
+            letter-spacing: 2px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .taskbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .taskbar a {
+            margin-right: 20px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .taskbar a:hover {
+            color: #2980b9;
+        }
+
+        .main-content {
+            padding-top: 100px; 
+            padding-bottom: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .quote-container {
+            background-color: #ecf0f1;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .feature-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 60px;
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .feature img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .feature-heading {
+            color: #3498db;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            max-width: 800px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ecf0f1;
+            text-align: left;
+        }
+
+        .signup-login {
+            position: relative;
+            z-index: 2;
+            padding-bottom: 10px;
+        }
+
+        .additional-options {
+            display: none;
+            position: absolute;
+            top: calc(100%);
+            left: 0;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            padding: 10px
+        }
+
+        .signup-login:hover .additional-options,
+        .signup-login .additional-options:hover {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .additional-options a {
+            padding: 8px 12px;
+            text-decoration: none;
+            color: #3498db;
+            transition: color 0.3s ease;
+            display: block;
+        }
+
+        .additional-options a:hover {
+            color: #2980b9;
+        }
+
+        .additional-options a:not(:last-child) {
+            margin-bottom: 5px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <div class="taskbar" style="height: 60px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+        <div>
+            {% if 'username' not in session %}
+                <div class="signup-login">
+                    <a href="/signup">Sign Up</a>
+                    <a href="/login">Login</a>
+                    <div class="additional-options" id="additionalOptions">
+                        <a href="/interviewer_signup">Interviewer Sign Up</a>
+                        <a href="/interviewer_login">Interviewer Login</a>
+                        <a href="/signup">Interviewee Sign Up</a>
+                        <a href="/login">Interviewee Login</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="/logout">Logout</a>
+            {% endif %}
+        </div>
+        <div style="position: absolute; left: 50%; transform: translateX(-50%);">
+            <a href="/" style="font-size: 24px;">Home</a>
+        </div>
+        <div>
+            <a href="/resume-review">Resume Review</a>
+            <a href="/setup-interview">Set Up Interview</a>
+            <a href="/about">About the Company</a>
+            <a href="/faq">FAQ</a>
+        </div>
+    </div>
+    
+    
+
+    <div class="main-content">
+        <div class="intro-container">
+            <div class="intro-content">
+                <h1 class="intro-heading">ScholarViews</h1>
+                <div class="intro-motto">
+                    <p>Mock, Improve, Impress</p>
+                </div>
+                <div class="intro-paragraphs">
+                    <p>
+                        Welcome to ScholarView, your platform for honing interview skills. At ScholarView, we understand the crucial role preparation plays in a successful job search. Our tailored mock interviews and expert feedback empower you to excel in real-world interviews. Join us and turn preparation into success!
+                    </p>
+                    <p>
+                        We specialize in providing mock interviews to enhance your chances of landing your next dream job! Gain the confidence to ace your real interviews today.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="quote-container">
+            <p class="quote">"Skills honed through practice pave the path to success." - Elon Musk</p>
+        </div>
+
+        <div class="feature-container">
+            <div class="feature">
+                <img src="https://as1.ftcdn.net/v2/jpg/01/35/29/24/1000_F_135292415_IHzOfMEdhvPDqCCFfeTzeAl7uLgy1WXA.jpg" alt="Interview Preparation">
+                <h2 class="feature-heading">Interview Preparation</h2>
+                <p class="feature-description">
+                    Our platform offers personalized mock interviews tailored to various job sectors, helping you refine your skills.
+                </p>
+            </div>
+
+            <div class="feature">
+                <img src="https://bemoacademicconsulting.com/storage/files/EUKYZDVdxJ8ruWxRsCX5rfZx0NnmUG5Yfv56BCk7.jpg" alt="Feedback and Improvement">
+                <h2 class="feature-heading">Customer Reviews</h2>
+                <div class="feature-description">
+                    <div style="background-color: #ecf0f1; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <p>
+                            Emily K: 
+                            “ScholarView was a game-changer in my job search! The personalized interview practice sessions helped me feel more confident and prepared. The feedback I received was invaluable. It definitely contributed to my success in landing my dream job. Highly recommended!”
+                        </p>
+                    </div>
+
+                    <div style="background-color: #ecf0f1; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <p>
+                            David R: 
+                            “I can't thank ScholarView enough! The platform's simulated interviews were spot-on. The industry-specific questions and expert guidance tremendously improved my interview skills. I felt well-prepared and composed in my actual interview, and I owe a big part of that success to ScholarView!”
+                        </p>
+                    </div>
+
+                    <div style="background-color: #ecf0f1; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <p>
+                            Sophia L: 
+                            “ScholarView made me realize the power of practice. The interview simulations were so realistic and tailored to my industry. The constructive criticism and tips I received helped me identify my weaknesses and turn them into strengths. Definitely a must-try for anyone serious about acing their interviews!”
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const signupLogin = document.querySelector('.signup-login');
+        const additionalOptions = document.getElementById('additionalOptions');
+
+        // Show signup options on hover
+        signupLogin.children[0].addEventListener('mouseenter', () => {
+            additionalOptions.children[0].style.display = 'block';
+            additionalOptions.children[1].style.display = 'none';
+            additionalOptions.children[2].style.display = 'block';
+            additionalOptions.children[3].style.display = 'none';
+        });
+
+        // Show login options on hover
+        signupLogin.children[1].addEventListener('mouseenter', () => {
+            additionalOptions.children[0].style.display = 'none';
+            additionalOptions.children[1].style.display = 'block';
+            additionalOptions.children[2].style.display = 'none';
+            additionalOptions.children[3].style.display = 'block';
+        });
+
+        // Hide additional options when leaving the signup/login area
+        signupLogin.addEventListener('mouseleave', () => {
+            additionalOptions.children[0].style.display = 'none';
+            additionalOptions.children[1].style.display = 'none';
+            additionalOptions.children[2].style.display = 'none';
+            additionalOptions.children[3].style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>
+

@@ -39,7 +39,6 @@ def signup():
 
     return render_template('login_page/signup.html')
 
-
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -49,10 +48,10 @@ def login():
 
         if user and user.check_password(password):
             login_user(user)
-            return redirect(url_for('main.home'))  # Redirect to home
+            return redirect(url_for('main.home'))
         else:
-            flash('Invalid username or password')  # Show this in red on the page
-            return redirect(url_for('auth.login'))  # Re-render the same route
+            flash('Invalid username or password')
+            return redirect(url_for('auth.login'))
 
     return render_template('login_page/login.html')
 
@@ -62,4 +61,3 @@ def logout():
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('main.home'))
-

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Review</title>
+    <style>
+        /* Add your styling here */
+        /* ... */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            overflow-y: scroll; /* Enable vertical scrolling */
+        }
+
+        h1 {
+            color: #3498db;
+            margin-bottom: 20px;
+            font-size: 40px;
+            letter-spacing: 2px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .taskbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .taskbar a {
+            margin-right: 20px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .taskbar a:hover {
+            color: #2980b9;
+        }
+
+        .main-content {
+            padding-top: 100px; /* Adjust to accommodate the taskbar */
+            padding-bottom: 50px; /* Provide some space at the bottom */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .drop-area {
+            width: 300px;
+            height: 200px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .drop-area p {
+            text-align: center;
+        }
+
+        label {
+            color: #3498db;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="taskbar" style="height: 60px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+        <div>
+            {% if 'username' not in session %}
+                <div class="signup-login">
+                    <a href="/signup">Sign Up</a>
+                    <a href="/login">Login</a>
+                    <div class="additional-options" id="additionalOptions">
+                        <a href="/interviewer_signup">Interviewer Sign Up</a>
+                        <a href="/interviewer_login">Interviewer Login</a>
+                        <a href="/signup">Interviewee Sign Up</a>
+                        <a href="/login">Interviewee Login</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="/logout">Logout</a>
+            {% endif %}
+        </div>
+        <div style="position: absolute; left: 50%; transform: translateX(-50%);">
+            <a href="/" style="font-size: 24px;">Home</a>
+        </div>
+        <div>
+            <a href="/resume-review">Resume Review</a>
+            <a href="/setup-interview">Set Up Interview</a>
+            <a href="/about">About the Company</a>
+            <a href="/faq">FAQ</a>
+        </div>
+    </div>
+    <h2>Interview Schedule</h2>
+    
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Set Time</th>
+            <th>Zoom Link</th>
+        </tr>
+        <tr>
+            <td>Asmita Pramanik</td>
+            <td>asmita@example.com</td>
+            <td>
+                <select>
+                    <option value="2024-02-12">February 12, 2024</option>
+                    <option value="2024-02-15">February 15, 2024</option>
+                    <!-- Add more dates here -->
+                </select>
+            </td>
+            <td><a href="https://zoom.us/asmita-interview">Join Zoom Meeting</a></td>
+        </tr>
+        <tr>
+            <td>Abhee Jani</td>
+            <td>abhee@example.com</td>
+            <td>
+                <select>
+                    <option value="2024-02-12">February 12, 2024</option>
+                    <option value="2024-02-15">February 15, 2024</option>
+                    <!-- Add more dates here -->
+                </select>
+            </td>
+            <td><a href="https://zoom.us/abhee-interview">Join Zoom Meeting</a></td>
+        </tr>
+    </table>
+
+</body>
+</html>

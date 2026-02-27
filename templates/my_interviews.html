@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Interviews</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="text-align: center;">
+    <h1>My Interviews</h1>
+    <ul>
+        {% for interview in interviews %}
+            <li>{{ interview.name }}</li>
+            <!-- Add other details as needed -->
+        {% endfor %}
+    </ul>
+    <a href="/user_dashboard" style="display: inline-block; background-color: #3498db; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px;">Back to Dashboard</a>
+</body>
+</html>

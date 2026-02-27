@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Interviews</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body style="text-align: center;">
+    <h1>Select Interviews</h1>
+    <form method="post" action="/select_interviews" style="background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); display: inline-block; margin-bottom: 20px;">
+        <label for="interview_name" style="font-size: 16px; margin-bottom: 8px; display: block;">Interview Name:</label>
+        <input type="text" id="interview_name" name="interview_name" style="padding: 10px; margin-bottom: 15px; width: 100%; box-sizing: border-box;">
+  
+        <label for="company" style="font-size: 16px; margin-bottom: 8px; display: block;">Company:</label>
+        <select id="company" name="company" style="padding: 10px; margin-bottom: 15px; width: 100%; box-sizing: border-box;">
+            <option value="">Select Company</option>
+            <option value="Netflix">Netflix</option>
+            <option value="Google">Google</option>
+            <option value="Amazon">Amazon</option>
+            <!-- Add other company options here -->
+        </select>
+        
+        <label for="years_exp" style="font-size: 16px; margin-bottom: 8px; display: block;">Years of Experience:</label>
+        <select id="years_exp" name="years_exp" style="padding: 10px; margin-bottom: 15px; width: 100%; box-sizing: border-box;">
+            <option value="">Select Years of Experience</option>
+            <option value="5">5 years</option>
+            <option value="8">8 years</option>
+            <option value="10">10 years</option>
+            <!-- Add other experience options here -->
+        </select>
+        
+        <label for="field" style="font-size: 16px; margin-bottom: 8px; display: block;">Field of Work:</label>
+        <select id="field" name="field" style="padding: 10px; margin-bottom: 15px; width: 100%; box-sizing: border-box;">
+            <option value="">Select Field of Work</option>
+            <option value="Technology">Technology</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Development">Development</option>
+            <!-- Add other field options here -->
+        </select>
+        
+        <input type="submit" name="action" value="Search" style="background-color: #3498db; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; cursor: pointer; transition: background-color 0.3s ease;">
+        <!-- Add other fields for interview details as needed -->
+    </form>
+    
+    {% if search_results %}
+        <h2>Search Results:</h2>
+        <form method="post" action="/select_interviews">
+            <ul>
+                {% for result in search_results %}
+                    <li>
+                        <input type="radio" id="{{ result['name'] }}" name="selected_interview" value="{{ result['name'] }}">
+                        <label for="{{ result['name'] }}">
+                            Name: {{ result['name'] }} | Company: {{ result['company'] }} | Years: {{ result['years_exp'] }} | Field: {{ result['field'] }}
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+            <input type="submit" name="action" value="Add Interview">
+            <input type="hidden" name="action" value="Add Interview">
+        </form>
+    {% endif %}
+    <br><br><br>
+    <a href="/user_dashboard" style="background-color: #3498db; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Back to Dashboard</a>
+</body>
+</html>
