@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Our Interviewers — ScholarViews{% endblock %}
+
+{% block head %}
+<style>
+  .interviewer-card { background: #fff; border: 1.5px solid var(--border); border-radius: 16px; padding: 1.75rem; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+  .interviewer-card:hover { border-color: var(--indigo); box-shadow: 0 8px 28px rgba(99,102,241,0.12); transform: translateY(-3px); }
+  .interviewer-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.25rem; color: #fff; margin-bottom: 0.9rem; flex-shrink: 0; }
+  .interviewer-name { font-weight: 700; color: var(--navy); font-size: 1rem; margin-bottom: 0.15rem; }
+  .interviewer-role { font-size: 0.82rem; color: var(--indigo); font-weight: 600; margin-bottom: 0.75rem; }
+  .interviewer-bio { font-size: 0.875rem; color: var(--gray); line-height: 1.7; margin-bottom: 1rem; }
+  .company-tag { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .spec-tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 4px; background: #f1f5f9; color: #475569; margin: 0.15rem; }
+  .apply-strip { background: linear-gradient(135deg, #0f172a, #1e1b4b); border-radius: 18px; padding: 3rem; text-align: center; }
+  .apply-strip h3 { color: #fff; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0.5rem; }
+  .apply-strip p { color: #94a3b8; font-size: 0.95rem; max-width: 480px; margin: 0 auto 1.5rem; line-height: 1.75; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Our Interviewers</h1>
+    <p>Current interns and engineers who have been through exactly the interviews you are preparing for.</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="sv-card mb-5" style="background:linear-gradient(135deg,#eef2ff,#fff);border-color:#c7d2fe;">
+    <p style="margin:0;font-size:0.875rem;color:var(--indigo);font-weight:600;">
+      &#128079; All ScholarViews interviewers are verified current students, interns, or full-time engineers at top tech companies.
+      They are selected for communication skills, interview track record, and ability to give structured feedback.
+    </p>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="interviewer-card">
+        <div class="interviewer-avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">A</div>
+        <div class="interviewer-name">Abhee J.</div>
+        <div class="interviewer-role">Software Engineer &amp; Platform Founder</div>
+        <p class="interviewer-bio">Built and maintains the ScholarViews platform. Has interviewed at and received offers from multiple Mag7 companies. Specializes in system design and algorithms.</p>
+        <div style="margin-bottom:0.75rem;">
+          <span class="company-tag" style="background:#eef2ff;color:#4f46e5;">Mag7 Experience</span>
+        </div>
+        <div>
+          <span class="spec-tag">System Design</span>
+          <span class="spec-tag">Algorithms</span>
+          <span class="spec-tag">Behavioral</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="interviewer-card">
+        <div class="interviewer-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">M</div>
+        <div class="interviewer-name">Interviewer Spot Open</div>
+        <div class="interviewer-role">Apply to Join Our Team</div>
+        <p class="interviewer-bio">We are actively recruiting engineers at top companies who want to give back and earn money helping students break into tech. Flexible hours, set your own schedule.</p>
+        <div style="margin-bottom:0.75rem;">
+          <span class="company-tag" style="background:#f0fdf4;color:#16a34a;">Hiring Now</span>
+        </div>
+        <div>
+          <span class="spec-tag">Your Specialization</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="interviewer-card">
+        <div class="interviewer-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">+</div>
+        <div class="interviewer-name">More Coming Soon</div>
+        <div class="interviewer-role">Growing Our Network</div>
+        <p class="interviewer-bio">We are onboarding engineers from Google, Meta, Amazon, Microsoft, Apple, Nvidia, and Tesla. Check back soon — or sign up to be notified when new interviewers join.</p>
+        <div style="margin-bottom:0.75rem;">
+          <span class="company-tag" style="background:#fffbeb;color:#d97706;">Coming Soon</span>
+        </div>
+        <div>
+          <span class="spec-tag">All Specializations</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="sv-card text-center" style="padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:0.75rem;">&#9989;</div>
+        <h6 style="font-weight:700;color:var(--navy);margin-bottom:0.4rem;">All Interviewers Are Vetted</h6>
+        <p style="color:var(--gray);font-size:0.85rem;margin:0;line-height:1.65;">We verify company email, interview history, and do a trial session before any interviewer goes live.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="sv-card text-center" style="padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:0.75rem;">&#128203;</div>
+        <h6 style="font-weight:700;color:var(--navy);margin-bottom:0.4rem;">Written Feedback Guaranteed</h6>
+        <p style="color:var(--gray);font-size:0.85rem;margin:0;line-height:1.65;">Every session ends with structured written notes. No empty "great job" — only actionable improvements.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="sv-card text-center" style="padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:0.75rem;">&#127775;</div>
+        <h6 style="font-weight:700;color:var(--navy);margin-bottom:0.4rem;">Rated After Every Session</h6>
+        <p style="color:var(--gray);font-size:0.85rem;margin:0;line-height:1.65;">Clients rate interviewers after each session. Low-rated interviewers are removed. Your experience is protected.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="apply-strip">
+    <h3>Are You an Engineer at a Top Company?</h3>
+    <p>Join ScholarViews as an interviewer. Set your own hours, make extra income, and help the next generation of engineers break in.</p>
+    <a href="mailto:scholarviewsinc@gmail.com?subject=Interviewer Application" class="btn-sv-primary">Apply to Be an Interviewer</a>
+  </div>
+</div>
+{% endblock %}

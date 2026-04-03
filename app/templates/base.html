@@ -100,6 +100,8 @@
         <ul class="nav-links">
           <li><a href="{{ url_for('main.interviewer_dashboard') }}">Dashboard</a></li>
           <li><a href="{{ url_for('main.interviewer_availability') }}">My Availability</a></li>
+          <li><a href="{{ url_for('main.about') }}">About</a></li>
+          <li><a href="{{ url_for('main.our_interviewers') }}">Our Interviewers</a></li>
         </ul>
       {% else %}
         <ul class="nav-links">
@@ -109,6 +111,9 @@
           <li><a href="{{ url_for('main.grad_studies') }}">Grad Studies</a></li>
           <li><a href="{{ url_for('main.resources') }}">Resources</a></li>
           <li><a href="{{ url_for('main.pricing') }}">Pricing</a></li>
+          <li><a href="{{ url_for('main.about') }}">About</a></li>
+          <li><a href="{{ url_for('main.our_interviewers') }}">Our Interviewers</a></li>
+          <li><a href="{{ url_for('main.faq') }}">FAQ</a></li>
         </ul>
       {% endif %}
       <div class="nav-right">
@@ -120,7 +125,14 @@
       </div>
     {% else %}
       <ul class="nav-links">
+        <li><a href="/#hiw">How It Works</a></li>
+        <li><a href="{{ url_for('main.about') }}">About</a></li>
+        <li><a href="{{ url_for('main.our_interviewers') }}">Our Interviewers</a></li>
+        <li><a href="{{ url_for('main.faq') }}">FAQ</a></li>
+        <li><a href="{{ url_for('main.resources') }}">Resources</a></li>
         <li><a href="{{ url_for('main.pricing') }}">Pricing</a></li>
+        <li><a href="{{ url_for('auth.login') }}">Schedule</a></li>
+        <li><a href="{{ url_for('auth.login') }}">Resume Review</a></li>
       </ul>
       <div class="nav-right">
         <a href="{{ url_for('auth.login') }}" class="btn-nav-ghost">Sign In</a>

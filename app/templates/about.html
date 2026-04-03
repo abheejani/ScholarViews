@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}About — ScholarViews{% endblock %}
+
+{% block head %}
+<style>
+  .about-hero { background: linear-gradient(135deg, #0f172a, #1e1b4b); padding: 3.5rem 0; margin-bottom: 2.5rem; }
+  .about-hero h1 { color: #fff; font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 0.5rem; }
+  .about-hero p { color: #94a3b8; font-size: 1rem; max-width: 560px; line-height: 1.75; margin: 0; }
+  .mission-card { background: linear-gradient(135deg, #eef2ff, #fff); border: 1.5px solid #c7d2fe; border-radius: 18px; padding: 2.5rem; margin-bottom: 2.5rem; }
+  .mission-card h2 { font-size: 1.5rem; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; margin-bottom: 0.75rem; }
+  .mission-card p { color: var(--gray); font-size: 0.95rem; line-height: 1.8; margin: 0; }
+  .stat-box { text-align: center; padding: 2rem 1rem; background: #fff; border: 1.5px solid var(--border); border-radius: 14px; }
+  .stat-num { font-size: 2.5rem; font-weight: 800; color: var(--indigo); letter-spacing: -1px; }
+  .stat-label { color: var(--gray); font-size: 0.875rem; font-weight: 600; margin-top: 0.25rem; }
+  .value-item { display: flex; gap: 1.25rem; align-items: flex-start; margin-bottom: 1.5rem; }
+  .value-icon { font-size: 1.5rem; flex-shrink: 0; width: 44px; height: 44px; background: #eef2ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+  .value-item h5 { font-weight: 700; color: var(--navy); font-size: 0.95rem; margin: 0 0 0.25rem; }
+  .value-item p { color: var(--gray); font-size: 0.875rem; line-height: 1.65; margin: 0; }
+  .contact-strip { background: var(--navy); border-radius: 18px; padding: 2.5rem; text-align: center; }
+  .contact-strip h4 { color: #fff; font-weight: 700; margin-bottom: 0.5rem; }
+  .contact-strip p { color: #94a3b8; font-size: 0.9rem; margin: 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-hero">
+  <div class="container">
+    <h1>About ScholarViews</h1>
+    <p>We believe every student deserves access to high-quality interview prep from people who actually know what hiring looks like from the inside.</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="mission-card">
+    <h2>Our Mission</h2>
+    <p>
+      ScholarViews connects ambitious students with current interns and engineers at top tech companies for 1-on-1 mock interview prep.
+      We exist because interview prep shouldn't be locked behind expensive bootcamps or generic YouTube videos.
+      The best way to get ready for a Google or Amazon interview is to practice with someone who just passed one.
+    </p>
+  </div>
+
+  <div class="row g-3 mb-5">
+    <div class="col-md-3 col-6">
+      <div class="stat-box">
+        <div class="stat-num">1:1</div>
+        <div class="stat-label">Personal Sessions</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-box">
+        <div class="stat-num">$20</div>
+        <div class="stat-label">Starting Price</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-box">
+        <div class="stat-num">7+</div>
+        <div class="stat-label">Companies Represented</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-box">
+        <div class="stat-num">48h</div>
+        <div class="stat-label">Resume Feedback SLA</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-md-6">
+      <h3 style="font-weight:800;color:var(--navy);letter-spacing:-0.5px;margin-bottom:1.5rem;">What We Stand For</h3>
+      <div class="value-item">
+        <div class="value-icon">&#128101;</div>
+        <div>
+          <h5>Peer-to-Peer Learning</h5>
+          <p>Our interviewers are students and recent grads — they remember exactly what it felt like to be where you are right now.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">&#128640;</div>
+        <div>
+          <h5>Real Interview Experience</h5>
+          <p>Every session mirrors what top tech companies actually ask — no fluff, no filler. Just the patterns that matter.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">&#128200;</div>
+        <div>
+          <h5>Actionable Feedback</h5>
+          <p>You leave every session with written notes and a clear plan for what to improve. Not just "good job, keep practicing."</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">&#128176;</div>
+        <div>
+          <h5>Affordable Pricing</h5>
+          <p>We keep prices fair because career opportunities shouldn't depend on how much money your family has.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="sv-card h-100" style="background:linear-gradient(160deg,#f8fafc,#fff);">
+        <h4 style="font-weight:800;color:var(--navy);margin-bottom:1rem;font-size:1.1rem;">The Story</h4>
+        <p style="color:var(--gray);font-size:0.9rem;line-height:1.8;margin-bottom:1rem;">
+          ScholarViews started because we noticed a gap. Students were spending hundreds on LeetCode premium,
+          generic courses, and career fairs — yet still bombing interviews because they had never practiced
+          with someone who had actually sat in that room.
+        </p>
+        <p style="color:var(--gray);font-size:0.9rem;line-height:1.8;margin-bottom:1rem;">
+          We built a platform where current engineers at places like Google, Meta, and Amazon could offer
+          structured, high-quality mock interviews to students preparing for the same roles. Real prep, real feedback,
+          real results.
+        </p>
+        <p style="color:var(--gray);font-size:0.9rem;line-height:1.8;margin:0;">
+          Every session is 1-on-1. Every interviewer is vetted. Every piece of feedback is written and actionable.
+          That's the ScholarViews standard.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-strip">
+    <h4>Want to partner or collaborate?</h4>
+    <p>Reach out to us at <a href="mailto:scholarviewsinc@gmail.com" style="color:#a5b4fc;font-weight:600;">scholarviewsinc@gmail.com</a> — we would love to hear from you.</p>
+  </div>
+</div>
+{% endblock %}

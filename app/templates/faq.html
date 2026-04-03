@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block title %}FAQ — ScholarViews{% endblock %}
+
+{% block head %}
+<style>
+  .faq-category { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--indigo); margin: 2rem 0 0.75rem; }
+  .faq-item { background: #fff; border: 1.5px solid var(--border); border-radius: 12px; margin-bottom: 0.6rem; overflow: hidden; }
+  .faq-question { font-weight: 700; color: var(--navy); font-size: 0.95rem; padding: 1.1rem 1.4rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .faq-question:hover { background: #fafafa; }
+  .faq-toggle { color: var(--indigo); font-size: 1.1rem; flex-shrink: 0; transition: transform 0.2s; }
+  .faq-answer { padding: 0 1.4rem 1.1rem; color: var(--gray); font-size: 0.875rem; line-height: 1.75; display: none; }
+  .faq-item.open .faq-answer { display: block; }
+  .faq-item.open .faq-toggle { transform: rotate(45deg); }
+  .still-confused { background: linear-gradient(135deg, #eef2ff, #fff); border: 1.5px solid #c7d2fe; border-radius: 16px; padding: 2.5rem; text-align: center; margin-top: 3rem; }
+  .still-confused h4 { font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+  .still-confused p { color: var(--gray); font-size: 0.9rem; margin: 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know about ScholarViews, sessions, and pricing.</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+
+      <div class="faq-category">Getting Started</div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          What is ScholarViews?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">ScholarViews is a peer-to-peer mock interview platform. We connect college students and recent grads with current interns and engineers at top tech companies for 1-on-1 interview prep sessions.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Who are the interviewers?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">Our interviewers are current students, interns, and full-time engineers at companies like Google, Meta, Amazon, Apple, Microsoft, Nvidia, and Tesla. They have all recently gone through the exact hiring process you are preparing for. All interviewers are vetted before joining.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Do I need an account to browse?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">You can browse the homepage, pricing, about, and resources pages without an account. Scheduling sessions and resume reviews require a free account.</div>
+      </div>
+
+      <div class="faq-category">Sessions &amp; Scheduling</div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          What does a session look like?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">Each session is 1 hour. You will work through technical or behavioral questions (your choice) with your interviewer, just like a real interview. At the end, you receive structured written feedback with specific areas to improve and resources to use.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          How do I book a session?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">Create an account, purchase a session package, then go to the Schedule page. You will see available time slots from all our interviewers. Click "Book" on a slot that works for you — it will be confirmed instantly and deducted from your credits.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Can I pick which interviewer I want?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">Yes. The schedule page shows availability grouped by interviewer so you can choose based on their company, specialization, and time slot that works for you.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Can I cancel or reschedule a session?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">Cancellation and rescheduling features are coming soon. For now, email us at <a href="mailto:scholarviewsinc@gmail.com" style="color:var(--indigo);font-weight:600;">scholarviewsinc@gmail.com</a> and we will sort it out for you.</div>
+      </div>
+
+      <div class="faq-category">Pricing &amp; Credits</div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          How does pricing work?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">We sell session packages — 1 session ($20), 10 sessions ($180, save $20), or 20 sessions ($300, save $100). Each session = 1 credit = 1 hour with an interviewer. You pay once upfront and use credits whenever you are ready.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Do session credits expire?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">No. Your credits never expire. Buy when you are ready, use them on your own timeline. No pressure, no deadlines.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          How do I pay?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">Secure payment processing is coming soon. Right now, email us at <a href="mailto:scholarviewsinc@gmail.com" style="color:var(--indigo);font-weight:600;">scholarviewsinc@gmail.com</a> and we will set up your account manually. We accept Venmo, Zelle, and PayPal.</div>
+      </div>
+
+      <div class="faq-category">Resume Review</div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Is resume review free?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">Yes. Resume review is free and unlimited for all registered users — no session credits required. Just upload your resume and expect feedback within 48 hours.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          What format should I upload my resume in?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">We accept PDF, DOC, and DOCX formats. Please name your file in the format: <strong>FirstName_LastName_Resume.pdf</strong> so we can keep track of submissions.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          How long does resume feedback take?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">We aim to get feedback back to you within 48 hours of submission. During busy periods it may take up to 72 hours. You will receive feedback directly by email.</div>
+      </div>
+
+      <div class="faq-category">Grad Studies</div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          What is Grad Studies?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">Grad Studies will offer research paper reviews, statement of purpose editing, and 1-on-1 grad school mentorship from current PhD and Masters students. This feature is coming soon — email us to be notified when it launches.</div>
+      </div>
+
+      <div class="still-confused">
+        <h4>Still have a question?</h4>
+        <p>Email us at <a href="mailto:scholarviewsinc@gmail.com" style="color:var(--indigo);font-weight:600;">scholarviewsinc@gmail.com</a> and we will get back to you within 24 hours.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+</script>
+{% endblock %}

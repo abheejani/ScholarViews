@@ -128,7 +128,7 @@ def resume_review():
         try:
             msg = Message(
                 subject=f'Resume Review — {current_user.username}',
-                recipients=['abheejani@gmail.com'],
+                recipients=['scholarviewsinc@gmail.com'],
                 body=(
                     f'Resume submitted by {current_user.username} ({current_user.email})\n'
                     f'Submitted: {datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")}'
@@ -152,9 +152,23 @@ def grad_studies():
 
 
 @main_bp.route('/resources')
-@login_required
 def resources():
     return render_template('resources.html')
+
+
+@main_bp.route('/about')
+def about():
+    return render_template('about.html')
+
+
+@main_bp.route('/interviewers')
+def our_interviewers():
+    return render_template('interviewers.html')
+
+
+@main_bp.route('/faq')
+def faq():
+    return render_template('faq.html')
 
 
 # ── Interviewer pages ─────────────────────────────────────────────────────────
