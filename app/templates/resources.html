@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Resources — ScholarViews{% endblock %}
+
+{% block head %}
+<style>
+  .resource-card { background: #fff; border: 1.5px solid var(--border); border-radius: 14px; padding: 1.25rem 1.5rem; transition: border-color 0.15s, box-shadow 0.15s; }
+  .resource-card:hover { border-color: var(--indigo); box-shadow: 0 4px 16px rgba(99,102,241,0.1); }
+  .resource-tag { display: inline-block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.2rem 0.6rem; border-radius: 4px; margin-bottom: 0.6rem; }
+  .tag-interview { background: #ede9fe; color: #7c3aed; }
+  .tag-book { background: #fef3c7; color: #d97706; }
+  .tag-general { background: #e0f2fe; color: #0369a1; }
+  .resource-card h6 { font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; font-size: 0.925rem; }
+  .resource-card p { color: var(--gray); font-size: 0.82rem; margin: 0; line-height: 1.55; }
+  .resources-label { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Resources</h1>
+    <p>Curated interview prep materials, books, and guides handpicked by our team.</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="sv-card mb-4" style="background:linear-gradient(135deg,#eef2ff,#fff);border-color:#c7d2fe;">
+    <p style="margin:0;font-size:0.875rem;color:var(--indigo);font-weight:600;">&#128679; This section is being built out. Check back soon — we are adding curated resources for interview prep, books, exam guides, and more.</p>
+  </div>
+
+  <div class="resources-label">Interview Prep</div>
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="resource-card">
+        <span class="resource-tag tag-interview">Interview Prep</span>
+        <h6>LeetCode</h6>
+        <p>The go-to platform for coding interview practice. Start with easy problems and work your way up.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="resource-card">
+        <span class="resource-tag tag-interview">Interview Prep</span>
+        <h6>NeetCode</h6>
+        <p>Structured roadmap and video explanations for LeetCode problems. Great for visual learners.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="resource-card">
+        <span class="resource-tag tag-interview">Interview Prep</span>
+        <h6>Blind 75</h6>
+        <p>The classic list of 75 must-solve LeetCode problems that cover all key patterns.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="resources-label">Recommended Books</div>
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="resource-card">
+        <span class="resource-tag tag-book">Book</span>
+        <h6>Cracking the Coding Interview</h6>
+        <p>Gayle Laakmann McDowell. The definitive guide to software engineering interviews. Essential reading.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="resource-card">
+        <span class="resource-tag tag-book">Book</span>
+        <h6>System Design Interview</h6>
+        <p>Alex Xu. Covers large-scale system design with real examples. Great for mid-to-senior prep.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="resource-card">
+        <span class="resource-tag tag-book">Book</span>
+        <h6>Elements of Programming Interviews</h6>
+        <p>Adnan Aziz et al. More rigorous than CtCI — ideal for competitive roles at top companies.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sv-card" style="text-align:center;padding:2rem;">
+    <p style="margin:0;font-size:0.9rem;color:var(--gray);">Got a resource suggestion? Email <a href="mailto:abheejani@gmail.com" style="color:var(--indigo);font-weight:600;">abheejani@gmail.com</a></p>
+  </div>
+</div>
+{% endblock %}

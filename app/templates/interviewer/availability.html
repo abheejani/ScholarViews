@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}My Availability — ScholarViews{% endblock %}
+
+{% block head %}
+<style>
+  .slot-row { background: #fff; border: 1.5px solid var(--border); border-radius: 10px; padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+  .slot-date { font-weight: 700; font-size: 0.875rem; color: var(--navy); min-width: 110px; }
+  .slot-time { font-size: 0.875rem; color: var(--gray); flex: 1; }
+  .slot-status-open { font-size: 0.78rem; font-weight: 700; color: #16a34a; background: #f0fdf4; padding: 0.2rem 0.6rem; border-radius: 100px; white-space: nowrap; }
+  .slot-status-booked { font-size: 0.78rem; font-weight: 700; color: #2563eb; background: #eff6ff; padding: 0.2rem 0.6rem; border-radius: 100px; white-space: nowrap; }
+  .add-form { background: #fff; border: 1.5px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+  .form-label { font-weight: 600; font-size: 0.85rem; color: var(--slate); margin-bottom: 0.4rem; display: block; }
+  .form-control { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.9rem; color: var(--navy); outline: none; transition: border-color 0.15s; font-family: inherit; background: #fff; }
+  .form-control:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+  .section-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-bottom: 1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>My Availability</h1>
+    <p>Add the time slots when you are available for mock interviews.</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="row g-4">
+    <div class="col-md-5">
+      <div class="add-form">
+        <div class="section-label">Add New Slot</div>
+        <form method="POST" action="{{ url_for('main.add_availability') }}">
+          <div class="mb-3">
+            <label class="form-label" for="date">Date</label>
+            <input type="date" id="date" name="date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="start_time">Start Time</label>
+            <input type="time" id="start_time" name="start_time" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="end_time">End Time</label>
+            <input type="time" id="end_time" name="end_time" class="form-control" required>
+          </div>
+          <button type="submit" class="btn-sv-primary" style="width:100%;text-align:center;">Add Slot</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-md-7">
+      <div class="section-label">Your Slots</div>
+      {% if slots %}
+        {% for slot in slots %}
+        <div class="slot-row">
+          <div class="slot-date">{{ slot.date.strftime('%b %d, %Y') }}</div>
+          <div class="slot-time">{{ slot.start_time }} &#8211; {{ slot.end_time }}</div>
+          {% if slot.is_booked %}
+            <span class="slot-status-booked">Booked</span>
+          {% else %}
+            <span class="slot-status-open">Open</span>
+            <form method="POST" action="{{ url_for('main.delete_availability', slot_id=slot.id) }}" style="display:inline;" onsubmit="return confirm('Remove this slot?')">
+              <button type="submit" style="background:none;border:none;color:#ef4444;font-size:0.8rem;font-weight:600;cursor:pointer;padding:0.2rem 0.4rem;font-family:inherit;">Remove</button>
+            </form>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% else %}
+        <div style="text-align:center;padding:3rem;color:var(--gray);">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">&#128197;</div>
+          <p style="margin:0;font-size:0.9rem;">No slots yet. Add your first availability on the left.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

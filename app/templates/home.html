@@ -1,297 +1,176 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ScholarViews — Build Confidence, Land Opportunities</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    :root {
-      --indigo: #6366f1;
-      --indigo-dark: #4f46e5;
-      --emerald: #10b981;
-      --navy: #0f172a;
-      --slate: #1e293b;
-      --gray: #64748b;
-      --light: #f8fafc;
-    }
-    * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
-    body { background: #fff; color: var(--slate); margin: 0; }
+{% extends 'base.html' %}
+{% block title %}ScholarViews — Interview Prep with Real Engineers{% endblock %}
 
-    /* ── Navbar ── */
-    .sv-nav {
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid #e2e8f0;
-      padding: 0.9rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .sv-nav .container { display: flex; align-items: center; justify-content: space-between; }
-    .nav-logo { font-weight: 800; font-size: 1.3rem; color: var(--navy); text-decoration: none; letter-spacing: -0.5px; }
-    .nav-logo span { color: var(--indigo); }
-    .nav-links { display: flex; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
-    .nav-links a { color: var(--gray); text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 0.4rem 0.75rem; border-radius: 6px; transition: color 0.15s, background 0.15s; }
-    .nav-links a:hover { color: var(--indigo); background: #eef2ff; }
-    .nav-actions { display: flex; gap: 0.6rem; align-items: center; }
-    .btn-ghost { color: var(--slate); font-weight: 600; font-size: 0.9rem; text-decoration: none; padding: 0.45rem 1rem; border-radius: 8px; border: 1.5px solid #e2e8f0; transition: border-color 0.15s, color 0.15s; }
-    .btn-ghost:hover { border-color: var(--indigo); color: var(--indigo); }
-    .btn-primary-sm { background: var(--indigo); color: #fff; font-weight: 600; font-size: 0.9rem; text-decoration: none; padding: 0.45rem 1.1rem; border-radius: 8px; transition: background 0.15s; }
-    .btn-primary-sm:hover { background: var(--indigo-dark); color: #fff; }
+{% block head %}
+<style>
+  body { background: #fff; }
+  .hero { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%); min-height: 88vh; display: flex; align-items: center; position: relative; overflow: hidden; }
+  .hero-blob-1 { position: absolute; width: 650px; height: 650px; background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 65%); top: -150px; right: -100px; border-radius: 50%; }
+  .hero-blob-2 { position: absolute; width: 450px; height: 450px; background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 65%); bottom: -80px; left: 5%; border-radius: 50%; }
+  .hero-inner { position: relative; z-index: 1; padding: 5rem 0; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(99,102,241,0.18); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.35); padding: 0.35rem 1rem; border-radius: 100px; font-size: 0.85rem; font-weight: 500; margin-bottom: 1.75rem; }
+  .hero h1 { font-size: clamp(2.4rem, 5vw, 3.75rem); font-weight: 800; color: #fff; line-height: 1.08; letter-spacing: -1.5px; margin-bottom: 1.25rem; }
+  .hero h1 em { color: #a5b4fc; font-style: normal; }
+  .hero-sub { font-size: 1.1rem; color: #94a3b8; max-width: 540px; line-height: 1.75; margin-bottom: 2.25rem; }
+  .hero-ctas { display: flex; gap: 0.9rem; flex-wrap: wrap; }
+  .btn-hero-p { background: var(--indigo); color: #fff; font-weight: 700; padding: 0.85rem 2rem; border-radius: 10px; font-size: 0.975rem; text-decoration: none; display: inline-block; transition: background 0.15s, transform 0.15s; }
+  .btn-hero-p:hover { background: var(--indigo-dark); color: #fff; transform: translateY(-1px); }
+  .btn-hero-s { background: transparent; color: #e2e8f0; font-weight: 600; padding: 0.85rem 2rem; border-radius: 10px; font-size: 0.975rem; border: 1.5px solid rgba(255,255,255,0.22); text-decoration: none; display: inline-block; transition: border-color 0.15s; }
+  .btn-hero-s:hover { border-color: rgba(255,255,255,0.55); color: #fff; }
+  .hiw { padding: 5.5rem 0; background: var(--light); }
+  .step-num { width: 44px; height: 44px; background: linear-gradient(135deg, #eef2ff, #e0e7ff); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; color: var(--indigo); margin: 0 auto 1.1rem; }
+  .step-card { text-align: center; padding: 2rem 1.5rem; }
+  .step-card h5 { font-weight: 700; font-size: 1rem; color: var(--navy); margin-bottom: 0.5rem; }
+  .step-card p { color: var(--gray); font-size: 0.9rem; line-height: 1.7; margin: 0; }
+  .step-connector { display: flex; align-items: center; justify-content: center; color: #cbd5e1; font-size: 1.5rem; padding-top: 1.5rem; }
+  .pricing-section { padding: 5.5rem 0; background: #fff; }
+  .price-card { background: #fff; border: 1.5px solid var(--border); border-radius: 18px; padding: 2rem; text-align: center; height: 100%; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; position: relative; }
+  .price-card:hover { border-color: var(--indigo); box-shadow: 0 12px 35px rgba(99,102,241,0.13); transform: translateY(-4px); }
+  .price-card.featured { border-color: var(--indigo); background: linear-gradient(135deg, #eef2ff, #fff); }
+  .featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--indigo); color: #fff; font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.8rem; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .price-amount { font-size: 2.75rem; font-weight: 800; color: var(--navy); letter-spacing: -1.5px; }
+  .price-amount sup { font-size: 1.2rem; vertical-align: super; letter-spacing: 0; }
+  .price-label { color: var(--gray); font-size: 0.875rem; margin-bottom: 0.25rem; }
+  .price-sessions { color: var(--indigo); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .price-save { background: #f0fdf4; color: #16a34a; font-size: 0.78rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 100px; display: inline-block; margin-bottom: 1.25rem; }
+  .price-features { list-style: none; padding: 0; margin: 0 0 1.5rem; text-align: left; }
+  .price-features li { font-size: 0.875rem; color: var(--gray); padding: 0.35rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .price-features li:last-child { border: none; }
+  .price-features li::before { content: "✓"; color: #16a34a; font-weight: 700; flex-shrink: 0; }
+  .cta-banner { background: linear-gradient(135deg, #0f172a, #1e1b4b); padding: 5rem 0; text-align: center; }
+  .cta-banner h2 { color: #fff; font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0.9rem; }
+  .cta-banner p { color: #94a3b8; font-size: 1rem; max-width: 460px; margin: 0 auto 2rem; line-height: 1.75; }
+  .sv-footer { background: var(--navy); padding: 3.5rem 0 2rem; }
+  .footer-brand { font-weight: 800; font-size: 1.2rem; color: #fff; letter-spacing: -0.5px; margin-bottom: 0.4rem; }
+  .footer-brand span { color: #a5b4fc; }
+  .footer-tagline { color: #475569; font-size: 0.875rem; line-height: 1.6; max-width: 260px; }
+  .footer-col-title { color: #94a3b8; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 0.9rem; }
+  .footer-link { display: block; color: #475569; font-size: 0.875rem; text-decoration: none; margin-bottom: 0.5rem; transition: color 0.15s; }
+  .footer-link:hover { color: #a5b4fc; }
+  .footer-hr { border-color: #1e293b; margin: 2rem 0 1.5rem; }
+  .footer-copy { color: #334155; font-size: 0.82rem; text-align: center; }
+</style>
+{% endblock %}
 
-    /* ── Hero ── */
-    .hero {
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%);
-      min-height: 88vh;
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-blob-1 {
-      position: absolute; width: 650px; height: 650px;
-      background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 65%);
-      top: -150px; right: -100px; border-radius: 50%; pointer-events: none;
-    }
-    .hero-blob-2 {
-      position: absolute; width: 450px; height: 450px;
-      background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 65%);
-      bottom: -80px; left: 5%; border-radius: 50%; pointer-events: none;
-    }
-    .hero-inner { position: relative; z-index: 1; padding: 5rem 0; }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: rgba(99,102,241,0.18);
-      color: #a5b4fc;
-      border: 1px solid rgba(99,102,241,0.35);
-      padding: 0.35rem 1rem;
-      border-radius: 100px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 1.75rem;
-      letter-spacing: 0.2px;
-    }
-    .hero h1 {
-      font-size: clamp(2.6rem, 5.5vw, 4rem);
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.08;
-      letter-spacing: -1.5px;
-      margin-bottom: 1.25rem;
-    }
-    .hero h1 em { color: #a5b4fc; font-style: normal; }
-    .hero-sub {
-      font-size: 1.15rem;
-      color: #94a3b8;
-      max-width: 530px;
-      line-height: 1.75;
-      margin-bottom: 2.25rem;
-    }
-    .hero-ctas { display: flex; gap: 0.9rem; flex-wrap: wrap; }
-    .btn-cta-primary {
-      background: var(--indigo); color: #fff; font-weight: 700;
-      padding: 0.85rem 2rem; border-radius: 10px; font-size: 0.975rem;
-      text-decoration: none; display: inline-block; border: none;
-      transition: background 0.15s, transform 0.15s;
-    }
-    .btn-cta-primary:hover { background: var(--indigo-dark); color: #fff; transform: translateY(-1px); }
-    .btn-cta-secondary {
-      background: transparent; color: #e2e8f0; font-weight: 600;
-      padding: 0.85rem 2rem; border-radius: 10px; font-size: 0.975rem;
-      border: 1.5px solid rgba(255,255,255,0.22);
-      text-decoration: none; display: inline-block;
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .btn-cta-secondary:hover { border-color: rgba(255,255,255,0.55); color: #fff; }
-
-    /* ── Stats bar ── */
-    .stats-bar { background: var(--light); border-bottom: 1px solid #e2e8f0; padding: 2.5rem 0; }
-    .stat-item { text-align: center; }
-    .stat-num { font-size: 2.1rem; font-weight: 800; color: var(--navy); letter-spacing: -1px; }
-    .stat-lbl { color: var(--gray); font-size: 0.875rem; font-weight: 500; margin-top: 0.2rem; }
-
-    /* ── Features ── */
-    .features-section { padding: 5.5rem 0; }
-    .section-eyebrow { color: var(--indigo); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 0.6rem; }
-    .section-title { font-size: 2.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.75px; margin-bottom: 0.9rem; }
-    .section-sub { color: var(--gray); font-size: 1rem; max-width: 520px; margin: 0 auto; line-height: 1.75; }
-    .feat-card {
-      background: #fff;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 2rem;
-      height: 100%;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-    }
-    .feat-card:hover {
-      border-color: var(--indigo);
-      box-shadow: 0 10px 35px rgba(99,102,241,0.13);
-      transform: translateY(-4px);
-    }
-    .feat-icon {
-      width: 50px; height: 50px;
-      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.45rem;
-      margin-bottom: 1.2rem;
-    }
-    .feat-card h5 { font-weight: 700; font-size: 1.05rem; color: var(--navy); margin-bottom: 0.55rem; }
-    .feat-card p { color: var(--gray); font-size: 0.925rem; line-height: 1.7; margin: 0; }
-
-    /* ── CTA Banner ── */
-    .cta-banner {
-      background: linear-gradient(135deg, #0f172a, #1e1b4b);
-      padding: 5rem 0;
-      text-align: center;
-    }
-    .cta-banner h2 { color: #fff; font-size: 2.1rem; font-weight: 800; letter-spacing: -0.75px; margin-bottom: 0.9rem; }
-    .cta-banner p { color: #94a3b8; font-size: 1rem; max-width: 460px; margin: 0 auto 2rem; line-height: 1.75; }
-
-    /* ── Footer ── */
-    .sv-footer { background: var(--navy); padding: 3.5rem 0 2rem; }
-    .footer-brand { font-weight: 800; font-size: 1.2rem; color: #fff; letter-spacing: -0.5px; margin-bottom: 0.4rem; }
-    .footer-brand span { color: #a5b4fc; }
-    .footer-tagline { color: #475569; font-size: 0.875rem; line-height: 1.6; max-width: 260px; }
-    .footer-col-title { color: #94a3b8; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 0.9rem; }
-    .footer-link { display: block; color: #475569; font-size: 0.875rem; text-decoration: none; margin-bottom: 0.5rem; transition: color 0.15s; }
-    .footer-link:hover { color: #a5b4fc; }
-    .footer-hr { border-color: #1e293b; margin: 2rem 0 1.5rem; }
-    .footer-copy { color: #334155; font-size: 0.82rem; text-align: center; }
-
-    @media (max-width: 768px) {
-      .nav-links, .nav-actions { display: none; }
-      .hero h1 { font-size: 2.4rem; }
-    }
-  </style>
-</head>
-<body>
-
-<!-- Navbar -->
-<nav class="sv-nav">
-  <div class="container">
-    <a href="/" class="nav-logo">Scholar<span>Views</span></a>
-    <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="#">Interview Prep</a></li>
-      <li><a href="#">Internships</a></li>
-      <li><a href="#">Research</a></li>
-      <li><a href="#">About</a></li>
-    </ul>
-    <div class="nav-actions">
-      <a href="{{ url_for('auth.login') }}" class="btn-ghost">Sign In</a>
-      <a href="{{ url_for('auth.signup') }}" class="btn-primary-sm">Get Started</a>
-    </div>
-  </div>
-</nav>
-
-<!-- Hero -->
+{% block content %}
 <section class="hero">
   <div class="hero-blob-1"></div>
   <div class="hero-blob-2"></div>
   <div class="container hero-inner">
     <div class="row">
       <div class="col-lg-9">
-        <div class="hero-badge">🎓 Built for ambitious students</div>
-        <h1>Build Confidence,<br><em>Land Opportunities</em></h1>
-        <p class="hero-sub">ScholarViews helps students navigate internships, research roles, and careers through peer-led interview prep and curated guidance.</p>
+        <div class="hero-badge">🎓 Peer-to-peer interview prep</div>
+        <h1>Get Interview-Ready<br><em>with Engineers Who've Been There</em></h1>
+        <p class="hero-sub">Book 1-on-1 mock interviews with current interns and engineers at top tech companies. Real feedback, real experience — not generic prep.</p>
         <div class="hero-ctas">
-          <a href="{{ url_for('auth.signup') }}" class="btn-cta-primary">Get Started Free</a>
-          <a href="{{ url_for('auth.login') }}" class="btn-cta-secondary">Sign In</a>
+          <a href="{{ url_for('auth.signup') }}" class="btn-hero-p">Get Started Free</a>
+          <a href="{{ url_for('main.pricing') }}" class="btn-hero-s">See Pricing</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Stats -->
-<div class="stats-bar">
-  <div class="container">
-    <div class="row g-3 text-center">
-      <div class="col-6 col-md-3 stat-item">
-        <div class="stat-num">500+</div>
-        <div class="stat-lbl">Interview Questions</div>
-      </div>
-      <div class="col-6 col-md-3 stat-item">
-        <div class="stat-num">200+</div>
-        <div class="stat-lbl">Active Students</div>
-      </div>
-      <div class="col-6 col-md-3 stat-item">
-        <div class="stat-num">50+</div>
-        <div class="stat-lbl">Partner Labs</div>
-      </div>
-      <div class="col-6 col-md-3 stat-item">
-        <div class="stat-num">92%</div>
-        <div class="stat-lbl">Placement Rate</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Features -->
-<section class="features-section">
+<section class="hiw">
   <div class="container">
     <div class="text-center mb-5">
-      <div class="section-eyebrow">What We Offer</div>
-      <h2 class="section-title">Everything you need to succeed</h2>
-      <p class="section-sub">From your first cold email to a professor to nailing your final round — ScholarViews has you covered.</p>
+      <div class="section-eyebrow">How It Works</div>
+      <h2 class="section-title">Three steps to your dream offer</h2>
     </div>
-    <div class="row g-4">
+    <div class="row align-items-start g-0">
+      <div class="col-md-4"><div class="step-card"><div class="step-num">1</div><h5>Create an account and pick a package</h5><p>Sign up and choose how many sessions work for you. Pay once, book whenever you are ready.</p></div></div>
+      <div class="col-md-1 d-none d-md-flex step-connector">&#8594;</div>
+      <div class="col-md-3"><div class="step-card"><div class="step-num">2</div><h5>Browse engineers and pick a slot</h5><p>See real availability from our interviewers. Pick a time that works — no back-and-forth emails.</p></div></div>
+      <div class="col-md-1 d-none d-md-flex step-connector">&#8594;</div>
+      <div class="col-md-3"><div class="step-card"><div class="step-num">3</div><h5>Get personalized feedback</h5><p>Walk through technical and behavioral questions. Leave with a clear gameplan to improve.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-eyebrow">Pricing</div>
+      <h2 class="section-title">Simple, flexible packages</h2>
+      <p class="mt-2" style="color:var(--gray);font-size:0.95rem;">Each session = 1 hour of mock interview, feedback, and follow-up notes.</p>
+    </div>
+    <div class="row g-4 justify-content-center">
       <div class="col-md-4">
-        <div class="feat-card">
-          <div class="feat-icon">💼</div>
-          <h5>Internship Strategy</h5>
-          <p>Discover curated internship opportunities and build competitive applications with our tools and step-by-step guidance.</p>
+        <div class="price-card">
+          <p class="price-label">Starter</p>
+          <div class="price-amount"><sup>$</sup>20</div>
+          <p class="price-sessions">1 Session</p>
+          <ul class="price-features">
+            <li>1-hour mock interview</li>
+            <li>Written feedback</li>
+            <li>Resume tips</li>
+          </ul>
+          <a href="{{ url_for('auth.signup') }}" class="btn-sv-ghost" style="width:100%;text-align:center;">Get Started</a>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="feat-card">
-          <div class="feat-icon">🎯</div>
-          <h5>Interview Preparation</h5>
-          <p>Practice with real questions and simulate technical and behavioral interviews with ScholarViews mentors.</p>
+        <div class="price-card featured">
+          <span class="featured-badge">Most Popular</span>
+          <p class="price-label">Popular</p>
+          <div class="price-amount"><sup>$</sup>180</div>
+          <p class="price-sessions">10 Sessions</p>
+          <span class="price-save">Save $20</span>
+          <ul class="price-features">
+            <li>10 hours of prep</li>
+            <li>Written feedback each session</li>
+            <li>Resume review included</li>
+            <li>Grad school guidance</li>
+          </ul>
+          <a href="{{ url_for('auth.signup') }}" class="btn-sv-primary" style="width:100%;text-align:center;">Get Started</a>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="feat-card">
-          <div class="feat-icon">🔬</div>
-          <h5>Research & Beyond</h5>
-          <p>Find research openings, draft emails to professors, and explore academic pathways beyond the classroom.</p>
+        <div class="price-card">
+          <p class="price-label">Best Value</p>
+          <div class="price-amount"><sup>$</sup>300</div>
+          <p class="price-sessions">20 Sessions</p>
+          <span class="price-save">Save $100</span>
+          <ul class="price-features">
+            <li>20 hours of prep</li>
+            <li>Priority scheduling</li>
+            <li>Unlimited resume reviews</li>
+            <li>Mentorship access</li>
+          </ul>
+          <a href="{{ url_for('auth.signup') }}" class="btn-sv-ghost" style="width:100%;text-align:center;">Get Started</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA Banner -->
 <section class="cta-banner">
   <div class="container">
-    <h2>Ready to land your dream opportunity?</h2>
-    <p>Join hundreds of students already using ScholarViews to prep, apply, and succeed.</p>
-    <a href="{{ url_for('auth.signup') }}" class="btn-cta-primary">Create Your Free Account</a>
+    <h2>Ready to land that internship?</h2>
+    <p>Join students already using ScholarViews to prep smarter with engineers who have been exactly where you are.</p>
+    <a href="{{ url_for('auth.signup') }}" class="btn-hero-p">Create Your Free Account</a>
   </div>
 </section>
+{% endblock %}
 
-<!-- Footer -->
+{% block footer %}
 <footer class="sv-footer">
   <div class="container">
     <div class="row g-4">
       <div class="col-md-4">
         <div class="footer-brand">Scholar<span>Views</span></div>
-        <p class="footer-tagline">Helping students explore, prepare, and thrive through tailored support for internships, research, and interviews.</p>
+        <p class="footer-tagline">Peer-to-peer interview prep built for students breaking into tech.</p>
       </div>
       <div class="col-6 col-md-2 offset-md-2">
         <div class="footer-col-title">Platform</div>
-        <a href="#" class="footer-link">Interview Prep</a>
-        <a href="#" class="footer-link">Internships</a>
-        <a href="#" class="footer-link">Research Roles</a>
-        <a href="#" class="footer-link">Guidance</a>
+        <a href="{{ url_for('main.schedule') }}" class="footer-link">Schedule</a>
+        <a href="{{ url_for('main.resume_review') }}" class="footer-link">Resume Review</a>
+        <a href="{{ url_for('main.grad_studies') }}" class="footer-link">Grad Studies</a>
+        <a href="{{ url_for('main.resources') }}" class="footer-link">Resources</a>
       </div>
       <div class="col-6 col-md-2">
         <div class="footer-col-title">Company</div>
+        <a href="{{ url_for('main.pricing') }}" class="footer-link">Pricing</a>
         <a href="#" class="footer-link">About</a>
-        <a href="#" class="footer-link">Blog</a>
         <a href="#" class="footer-link">Contact</a>
       </div>
       <div class="col-6 col-md-2">
@@ -301,10 +180,7 @@
       </div>
     </div>
     <hr class="footer-hr">
-    <p class="footer-copy">© 2025 ScholarViews. All rights reserved. Built for students. Powered by mentorship.</p>
+    <p class="footer-copy">&#169; 2025 ScholarViews. All rights reserved. Built for students. Powered by mentorship.</p>
   </div>
 </footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}

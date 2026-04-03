@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block title %}Resume Review — ScholarViews{% endblock %}
+
+{% block head %}
+<style>
+  .upload-zone { background: #fff; border: 2px dashed var(--border); border-radius: 16px; padding: 3rem 2rem; text-align: center; transition: border-color 0.2s, background 0.2s; cursor: pointer; }
+  .upload-zone.dragover { border-color: var(--indigo); background: #eef2ff; }
+  .upload-icon { font-size: 2.75rem; margin-bottom: 0.75rem; }
+  .upload-zone h5 { font-weight: 700; color: var(--navy); margin-bottom: 0.4rem; }
+  .upload-zone p { color: var(--gray); font-size: 0.875rem; margin: 0; }
+  .file-input { display: none; }
+  .file-label { display: inline-block; background: var(--indigo); color: #fff; font-weight: 600; font-size: 0.875rem; padding: 0.6rem 1.25rem; border-radius: 8px; cursor: pointer; margin-top: 1rem; transition: background 0.15s; }
+  .file-label:hover { background: var(--indigo-dark); }
+  .file-selected { margin-top: 0.75rem; font-size: 0.85rem; color: var(--indigo); font-weight: 600; min-height: 1.2em; }
+  .instructions-card { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 1.25rem 1.5rem; }
+  .instructions-card h6 { font-weight: 700; color: #92400e; margin-bottom: 0.5rem; }
+  .instructions-card p { color: #92400e; font-size: 0.875rem; margin: 0; line-height: 1.65; }
+  .format-example { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: 0.6rem 1rem; font-family: monospace; font-size: 0.875rem; color: #c2410c; display: inline-block; margin-top: 0.5rem; }
+  .expect-row { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.85rem; }
+  .expect-row:last-child { margin-bottom: 0; }
+  .expect-row strong { font-size: 0.875rem; color: var(--navy); display: block; margin-bottom: 0.15rem; }
+  .expect-row p { font-size: 0.82rem; color: var(--gray); margin: 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Resume Review</h1>
+    <p>Upload your resume and get written feedback within 48 hours.</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="instructions-card mb-4">
+        <h6>&#128204; Submission Instructions</h6>
+        <p>Please name your file using the following format before uploading:</p>
+        <div class="format-example">MM-DD-YYYY-firstname-lastname</div>
+        <p style="margin-top:0.6rem;">Example: <strong>3-24-2026-john-doe.pdf</strong></p>
+      </div>
+
+      <div class="sv-card mb-4">
+        <form method="POST" action="{{ url_for('main.resume_review') }}" enctype="multipart/form-data">
+          <div class="upload-zone" id="drop-zone">
+            <div class="upload-icon">&#128196;</div>
+            <h5>Drop your resume here</h5>
+            <p>Accepts PDF, DOC, or DOCX files</p>
+            <label for="resume" class="file-label">Browse File</label>
+            <input type="file" name="resume" id="resume" class="file-input" accept=".pdf,.doc,.docx">
+            <div class="file-selected" id="file-name"></div>
+          </div>
+          <button type="submit" class="btn-sv-primary w-100 mt-3" style="text-align:center;">Submit for Review</button>
+        </form>
+      </div>
+
+      <div class="sv-card">
+        <h6 style="font-weight:700;color:var(--navy);margin-bottom:1rem;">What to expect</h6>
+        <div class="expect-row">
+          <span style="font-size:1.2rem;">&#9201;&#65039;</span>
+          <div><strong>48-hour turnaround</strong><p>You will receive written feedback within 48 hours of submission.</p></div>
+        </div>
+        <div class="expect-row">
+          <span style="font-size:1.2rem;">&#127919;</span>
+          <div><strong>Tech-focused feedback</strong><p>Our reviewers are engineers who know what hiring managers look for in tech resumes.</p></div>
+        </div>
+        <div class="expect-row">
+          <span style="font-size:1.2rem;">&#128231;</span>
+          <div><strong>Delivered by email</strong><p>Feedback will be sent to <strong>{{ current_user.email }}</strong></p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const input = document.getElementById('resume');
+  const label = document.getElementById('file-name');
+  const zone  = document.getElementById('drop-zone');
+
+  input.addEventListener('change', () => {
+    label.textContent = input.files[0] ? input.files[0].name : '';
+  });
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) { input.files = e.dataTransfer.files; label.textContent = e.dataTransfer.files[0].name; }
+  });
+</script>
+{% endblock %}

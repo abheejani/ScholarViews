@@ -71,6 +71,8 @@ def login():
 
         if user and user.check_password(password):
             login_user(user)
+            if user.role == 'interviewer':
+                return redirect(url_for('main.interviewer_dashboard'))
             return redirect(url_for('main.dashboard'))
         else:
             flash('Invalid username or password.', 'error')

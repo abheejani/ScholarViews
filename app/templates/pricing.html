@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Pricing — ScholarViews{% endblock %}
+
+{% block head %}
+<style>
+  .price-card { background: #fff; border: 1.5px solid var(--border); border-radius: 18px; padding: 2.25rem; text-align: center; height: 100%; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; position: relative; }
+  .price-card:hover { border-color: var(--indigo); box-shadow: 0 12px 35px rgba(99,102,241,0.13); transform: translateY(-4px); }
+  .price-card.featured { border-color: var(--indigo); background: linear-gradient(160deg, #eef2ff 0%, #fff 60%); }
+  .featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--indigo); color: #fff; font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.85rem; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .price-label { color: var(--gray); font-size: 0.875rem; margin-bottom: 0.2rem; font-weight: 600; }
+  .price-amount { font-size: 3rem; font-weight: 800; color: var(--navy); letter-spacing: -2px; }
+  .price-amount sup { font-size: 1.3rem; vertical-align: super; letter-spacing: 0; font-weight: 700; }
+  .price-sessions { color: var(--indigo); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .price-save { background: #f0fdf4; color: #16a34a; font-size: 0.78rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 100px; display: inline-block; margin-bottom: 1.5rem; }
+  .price-spacer { display: inline-block; margin-bottom: 1.5rem; height: 22px; }
+  .price-features { list-style: none; padding: 0; margin: 0 0 1.75rem; text-align: left; }
+  .price-features li { font-size: 0.875rem; color: var(--gray); padding: 0.4rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; }
+  .price-features li:last-child { border: none; }
+  .price-features li::before { content: "&#10003;"; color: #16a34a; font-weight: 800; flex-shrink: 0; }
+  .faq-item { background: #fff; border: 1.5px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; }
+  .faq-item h6 { font-weight: 700; color: var(--navy); margin-bottom: 0.4rem; font-size: 0.95rem; }
+  .faq-item p { color: var(--gray); font-size: 0.875rem; margin: 0; line-height: 1.65; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Simple, Transparent Pricing</h1>
+    <p>Pay for what you need. No subscriptions, no hidden fees.</p>
+  </div>
+</div>
+
+<div class="container pb-5">
+  <div class="row g-4 justify-content-center mb-4">
+    <div class="col-md-4">
+      <div class="price-card">
+        <p class="price-label">Starter</p>
+        <div class="price-amount"><sup>$</sup>20</div>
+        <p class="price-sessions">1 Session</p>
+        <div class="price-spacer"></div>
+        <ul class="price-features">
+          <li>1-hour mock interview</li>
+          <li>Written feedback report</li>
+          <li>Resume tips</li>
+          <li>Behavioral + technical coverage</li>
+        </ul>
+        <a href="{{ url_for('auth.signup') }}" class="btn-sv-ghost" style="width:100%;text-align:center;">Get Started</a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="price-card featured">
+        <span class="featured-badge">Most Popular</span>
+        <p class="price-label">Popular</p>
+        <div class="price-amount"><sup>$</sup>180</div>
+        <p class="price-sessions">10 Sessions</p>
+        <span class="price-save">Save $20 vs. individual</span>
+        <ul class="price-features">
+          <li>10 hours of mock interviews</li>
+          <li>Written feedback every session</li>
+          <li>1 resume review included</li>
+          <li>Grad school guidance</li>
+          <li>Flexible scheduling</li>
+        </ul>
+        <a href="{{ url_for('auth.signup') }}" class="btn-sv-primary" style="width:100%;text-align:center;">Get Started</a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="price-card">
+        <p class="price-label">Best Value</p>
+        <div class="price-amount"><sup>$</sup>300</div>
+        <p class="price-sessions">20 Sessions</p>
+        <span class="price-save">Save $100 vs. individual</span>
+        <ul class="price-features">
+          <li>20 hours of mock interviews</li>
+          <li>Written feedback every session</li>
+          <li>Unlimited resume reviews</li>
+          <li>Priority scheduling</li>
+          <li>Mentorship access</li>
+          <li>Grad school + internship guidance</li>
+        </ul>
+        <a href="{{ url_for('auth.signup') }}" class="btn-sv-ghost" style="width:100%;text-align:center;">Get Started</a>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align:center;color:var(--gray);font-size:0.875rem;margin-bottom:3.5rem;">
+    Sessions never expire. Questions? Email <strong>abheejani@gmail.com</strong>
+  </p>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h3 style="font-weight:800;color:var(--navy);letter-spacing:-0.5px;margin-bottom:1.5rem;">Common Questions</h3>
+      <div class="faq-item">
+        <h6>Who are the interviewers?</h6>
+        <p>Current interns and full-time engineers at top tech companies who have recently gone through the exact hiring process you are targeting.</p>
+      </div>
+      <div class="faq-item">
+        <h6>What does a session look like?</h6>
+        <p>Each session is 1 hour. You will go through technical or behavioral questions based on your target role, then receive structured written feedback with actionable next steps.</p>
+      </div>
+      <div class="faq-item">
+        <h6>Do sessions expire?</h6>
+        <p>No. Once you purchase a package, your credits are yours to use whenever you are ready. No pressure, no deadlines.</p>
+      </div>
+      <div class="faq-item">
+        <h6>How do I pay?</h6>
+        <p>Secure payment processing is coming soon. For now, reach out to us at <a href="mailto:abheejani@gmail.com" style="color:var(--indigo);font-weight:600;">abheejani@gmail.com</a> to get started and we will set up your account manually.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
