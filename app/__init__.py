@@ -1,14 +1,16 @@
+import os
 from flask import Flask
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from .models.user import db, User
 
 login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'your-secret-key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///local.db'
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-only-change-in-production')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     migrate = Migrate()

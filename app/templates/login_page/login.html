@@ -1,96 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Login V4</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link rel="icon" type="image/png" href="{{ url_for('static', filename='login_page/images/icons/favicon.ico') }}">
-	
-	<!-- CSS Files -->
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/bootstrap/css/bootstrap.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/fonts/iconic/css/material-design-iconic-font.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/animate/animate.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/css-hamburgers/hamburgers.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/animsition/css/animsition.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/select2/select2.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/daterangepicker/daterangepicker.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/css/util.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/css/main.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign In — ScholarViews</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --indigo: #6366f1;
+      --indigo-dark: #4f46e5;
+      --navy: #0f172a;
+      --slate: #1e293b;
+      --gray: #64748b;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2.5rem 2.25rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+    .brand {
+      display: block;
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--navy);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      margin-bottom: 2rem;
+    }
+    .brand span { color: var(--indigo); }
+    .card-title { font-size: 1.6rem; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; margin-bottom: 0.3rem; }
+    .card-sub { color: var(--gray); font-size: 0.9rem; margin-bottom: 1.75rem; }
+    .field { margin-bottom: 1rem; }
+    .field-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+    label { font-weight: 600; font-size: 0.85rem; color: var(--slate); }
+    .forgot { font-size: 0.82rem; color: var(--indigo); text-decoration: none; font-weight: 500; }
+    .forgot:hover { text-decoration: underline; }
+    input[type="text"], input[type="password"], input[type="email"] {
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.72rem 1rem;
+      font-size: 0.93rem;
+      color: var(--navy);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(99,102,241,0.13); }
+    input::placeholder { color: #94a3b8; }
+    .btn-submit {
+      width: 100%;
+      background: var(--indigo);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.82rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 0.75rem;
+      transition: background 0.15s;
+    }
+    .btn-submit:hover { background: var(--indigo-dark); }
+    .footer-note { text-align: center; color: var(--gray); font-size: 0.875rem; margin-top: 1.5rem; }
+    .footer-note a { color: var(--indigo); font-weight: 600; text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+    .alert {
+      padding: 0.65rem 0.9rem;
+      border-radius: 9px;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    .alert-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .alert-success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .alert-info { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .alert-warning { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+  </style>
 </head>
 <body>
-	
-	<div class="limiter">
-		<div class="container-login100" style="background-image: url('{{ url_for('static', filename='login_page/images/bg-01.jpg') }}');">
-			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
-				<form class="login100-form validate-form" method="POST" action="{{ url_for('auth.login') }}">
-					<span class="login100-form-title p-b-49">
-						Login
-					</span>
 
-					<div class="wrap-input100 validate-input m-b-23" data-validate="Username is required">
-						<span class="label-input100">Username</span>
-						<input class="input100" type="text" name="username" placeholder="Type your username">
-						<span class="focus-input100" data-symbol="&#xf206;"></span>
-					</div>
+<div class="card">
+  <a href="/" class="brand">Scholar<span>Views</span></a>
+  <h1 class="card-title">Welcome back</h1>
+  <p class="card-sub">Sign in to your ScholarViews account</p>
 
-					<div class="wrap-input100 validate-input" data-validate="Password is required">
-						<span class="label-input100">Password</span>
-						<input class="input100" type="password" name="password" placeholder="Type your password">
-						<span class="focus-input100" data-symbol="&#xf190;"></span>
-					</div>
-					
-					<div class="text-right p-t-8 p-b-31">
-						<a href="#">Forgot password?</a>
-					</div>
-					
-					<div class="container-login100-form-btn">
-						<div class="wrap-login100-form-btn">
-							<div class="login100-form-bgbtn"></div>
-							<button class="login100-form-btn" type="submit">
-								Login
-							</button>
-						</div>
-					</div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+    {% set cls = {'success': 'success', 'error': 'danger', 'danger': 'danger', 'info': 'info', 'warning': 'warning'}.get(category, 'info') %}
+    <div class="alert alert-{{ cls }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
 
-					{% with messages = get_flashed_messages(with_categories=true) %}
-					{% if messages %}
-						{% for category, message in messages %}
-						{% set alert_class = {
-							'success': 'success',
-							'error': 'danger',
-							'danger': 'danger',
-							'warning': 'warning',
-							'info': 'info'
-						}.get(category, 'secondary') %}
-						<div class="alert alert-{{ alert_class }}">
-							{{ message }}
-						</div>
-						{% endfor %}
-					{% endif %}
-					{% endwith %}
+  <form method="POST" action="{{ url_for('auth.login') }}">
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="Your username" required autofocus>
+    </div>
+    <div class="field">
+      <div class="field-header">
+        <label for="password">Password</label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+      <input type="password" id="password" name="password" placeholder="Your password" required>
+    </div>
+    <button class="btn-submit" type="submit">Sign In</button>
+  </form>
 
-					<div class="flex-col-c p-t-155">
-						<a href="{{ url_for('auth.signup') }}" class="txt2">Sign Up</a>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
-	<div id="dropDownSelect1"></div>
-
-	<!-- JS Files -->
-	<script src="{{ url_for('static', filename='login_page/vendor/jquery/jquery-3.2.1.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='login_page/vendor/animsition/js/animsition.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='login_page/vendor/bootstrap/js/popper.js') }}"></script>
-	<script src="{{ url_for('static', filename='login_page/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='login_page/vendor/select2/select2.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='login_page/vendor/daterangepicker/moment.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='login_page/vendor/daterangepicker/daterangepicker.js') }}"></script>
-	<script src="{{ url_for('static', filename='login_page/vendor/countdowntime/countdowntime.js') }}"></script>
-	<script src="{{ url_for('static', filename='login_page/js/main.js') }}"></script>
+  <p class="footer-note">Don't have an account? <a href="{{ url_for('auth.signup') }}">Sign up free</a></p>
+</div>
 
 </body>
 </html>

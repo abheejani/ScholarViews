@@ -1,141 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Sign Up</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign Up — ScholarViews</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --indigo: #6366f1;
+      --indigo-dark: #4f46e5;
+      --navy: #0f172a;
+      --slate: #1e293b;
+      --gray: #64748b;
+      --green: #16a34a;
+      --red: #dc2626;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2.5rem 2.25rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+    .brand {
+      display: block;
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--navy);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      margin-bottom: 2rem;
+    }
+    .brand span { color: var(--indigo); }
+    .card-title { font-size: 1.6rem; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; margin-bottom: 0.3rem; }
+    .card-sub { color: var(--gray); font-size: 0.9rem; margin-bottom: 1.75rem; }
+    .field { margin-bottom: 1rem; }
+    label { display: block; font-weight: 600; font-size: 0.85rem; color: var(--slate); margin-bottom: 0.4rem; }
+    input[type="text"], input[type="password"], input[type="email"] {
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.72rem 1rem;
+      font-size: 0.93rem;
+      color: var(--navy);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(99,102,241,0.13); }
+    input::placeholder { color: #94a3b8; }
 
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='login_page/images/icons/favicon.ico') }}">
+    /* Password requirements */
+    .pw-rules {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-top: 0.6rem;
+      display: none;
+    }
+    .pw-rules.visible { display: block; }
+    .pw-rule {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--gray);
+      margin-bottom: 0.3rem;
+      font-weight: 500;
+    }
+    .pw-rule:last-child { margin-bottom: 0; }
+    .pw-rule .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .pw-rule.valid { color: var(--green); }
+    .pw-rule.valid .dot { background: var(--green); }
+    .pw-rule.invalid { color: var(--red); }
+    .pw-rule.invalid .dot { background: var(--red); }
 
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/fonts/iconic/css/material-design-iconic-font.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/animate/animate.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/css-hamburgers/hamburgers.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/animsition/css/animsition.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/select2/select2.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/vendor/daterangepicker/daterangepicker.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/css/util.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login_page/css/main.css') }}">
-
-    <style>
-        .password-requirement {
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
-
-        .requirement {
-            margin-bottom: 5px;
-            color: red;
-        }
-
-        .requirement.valid {
-            color: green;
-        }
-    </style>
+    .btn-submit {
+      width: 100%;
+      background: var(--indigo);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.82rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 0.75rem;
+      transition: background 0.15s;
+    }
+    .btn-submit:hover { background: var(--indigo-dark); }
+    .footer-note { text-align: center; color: var(--gray); font-size: 0.875rem; margin-top: 1.5rem; }
+    .footer-note a { color: var(--indigo); font-weight: 600; text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+    .alert {
+      padding: 0.65rem 0.9rem;
+      border-radius: 9px;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    .alert-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .alert-success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .alert-info { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+  </style>
 </head>
 <body>
 
-<div class="limiter">
-    <div class="container-login100" style="background-image: url('{{ url_for('static', filename='login_page/images/bg-01.jpg') }}');">
-        <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
-            <form class="login100-form validate-form" method="POST" action="{{ url_for('auth.signup') }}">
-                <span class="login100-form-title p-b-49">
-                    Sign Up
-                </span>
+<div class="card">
+  <a href="/" class="brand">Scholar<span>Views</span></a>
+  <h1 class="card-title">Create your account</h1>
+  <p class="card-sub">Start prepping. Start landing opportunities.</p>
 
-                <div class="wrap-input100 validate-input m-b-23">
-                    <span class="label-input100">Username</span>
-                    <input class="input100" type="text" name="username" placeholder="Choose a username" required>
-                    <span class="focus-input100" data-symbol="&#xf206;"></span>
-                </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+    {% set cls = {'success': 'success', 'error': 'danger', 'danger': 'danger', 'info': 'info'}.get(category, 'info') %}
+    <div class="alert alert-{{ cls }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
 
-                <div class="wrap-input100 validate-input m-b-23">
-                    <span class="label-input100">Email</span>
-                    <input class="input100" type="email" name="email" placeholder="Your email" required>
-                    <span class="focus-input100" data-symbol="&#xf15a;"></span>
-                </div>
-
-                <div class="wrap-input100 validate-input m-b-23">
-                    <span class="label-input100">Password</span>
-                    <input id="password" class="input100" type="password" name="password" placeholder="Create a password" required>
-                    <span class="focus-input100" data-symbol="&#xf190;"></span>
-                </div>
-
-                <div class="wrap-input100 validate-input m-b-23">
-                    <span class="label-input100">Confirm Password</span>
-                    <input id="confirm-password" class="input100" type="password" name="confirm_password" placeholder="Re-type your password" required>
-                    <span class="focus-input100" data-symbol="&#xf190;"></span>
-                </div>
-
-                <div class="password-requirement">
-                    <div id="length" class="requirement">At least 8 characters</div>
-                    <div id="number" class="requirement">Contains a number</div>
-                    <div id="special" class="requirement">Contains a special character</div>
-                    <div id="match" class="requirement">Passwords match</div>
-                </div>
-
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        <div class="alert alert-danger text-center mt-3">
-                            {% for message in messages %}
-                                {{ message }}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                {% endwith %}
-
-                <div class="container-login100-form-btn mt-3">
-                    <div class="wrap-login100-form-btn">
-                        <div class="login100-form-bgbtn"></div>
-                        <button class="login100-form-btn" type="submit">
-                            Sign Up
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex-col-c p-t-30">
-                    <a href="{{ url_for('auth.login') }}" class="txt2">Already have an account?</a>
-                </div>
-            </form>
-        </div>
+  <form method="POST" action="{{ url_for('auth.signup') }}">
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="Choose a username" required autofocus>
     </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="you@university.edu" required>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+      <div class="pw-rules" id="pw-rules">
+        <div class="pw-rule" id="rule-len"><span class="dot"></span> At least 8 characters</div>
+        <div class="pw-rule" id="rule-num"><span class="dot"></span> Contains a number</div>
+        <div class="pw-rule" id="rule-spc"><span class="dot"></span> Contains a special character</div>
+        <div class="pw-rule" id="rule-match"><span class="dot"></span> Passwords match</div>
+      </div>
+    </div>
+    <div class="field">
+      <label for="confirm_password">Confirm Password</label>
+      <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" required>
+    </div>
+    <button class="btn-submit" type="submit">Create Account</button>
+  </form>
+
+  <p class="footer-note">Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
 </div>
 
 <script>
-    const password = document.getElementById("password");
-    const confirm = document.getElementById("confirm-password");
+  const pwInput = document.getElementById('password');
+  const cfInput = document.getElementById('confirm_password');
+  const rules   = document.getElementById('pw-rules');
+  const rLen    = document.getElementById('rule-len');
+  const rNum    = document.getElementById('rule-num');
+  const rSpc    = document.getElementById('rule-spc');
+  const rMatch  = document.getElementById('rule-match');
 
-    const length = document.getElementById("length");
-    const number = document.getElementById("number");
-    const special = document.getElementById("special");
-    const match = document.getElementById("match");
+  function applyRule(el, valid) {
+    el.classList.toggle('valid', valid);
+    el.classList.toggle('invalid', !valid);
+  }
 
-    function validatePassword() {
-        const pwd = password.value;
-        const conf = confirm.value;
+  function check() {
+    const pw = pwInput.value;
+    const cf = cfInput.value;
+    rules.classList.add('visible');
+    applyRule(rLen,   pw.length >= 8);
+    applyRule(rNum,   /\d/.test(pw));
+    applyRule(rSpc,   /[!@#$%^&*(),.?":{}|<>]/.test(pw));
+    applyRule(rMatch, pw.length > 0 && pw === cf);
+  }
 
-        length.classList.toggle("valid", pwd.length >= 8 && !pwd.includes(" "));
-        number.classList.toggle("valid", /\d/.test(pwd));
-        special.classList.toggle("valid", /[!@#$%^&*(),.?":{}|<>]/.test(pwd));
-        match.classList.toggle("valid", pwd === conf && pwd.length > 0);
-    }
-
-    password.addEventListener("input", validatePassword);
-    confirm.addEventListener("input", validatePassword);
+  pwInput.addEventListener('input', check);
+  cfInput.addEventListener('input', check);
 </script>
-
-<!-- JS Files -->
-<script src="{{ url_for('static', filename='login_page/vendor/jquery/jquery-3.2.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='login_page/vendor/animsition/js/animsition.min.js') }}"></script>
-<script src="{{ url_for('static', filename='login_page/vendor/bootstrap/js/popper.js') }}"></script>
-<script src="{{ url_for('static', filename='login_page/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-<script src="{{ url_for('static', filename='login_page/vendor/select2/select2.min.js') }}"></script>
-<script src="{{ url_for('static', filename='login_page/vendor/daterangepicker/moment.min.js') }}"></script>
-<script src="{{ url_for('static', filename='login_page/vendor/daterangepicker/daterangepicker.js') }}"></script>
-<script src="{{ url_for('static', filename='login_page/vendor/countdowntime/countdowntime.js') }}"></script>
-<script src="{{ url_for('static', filename='login_page/js/main.js') }}"></script>
 
 </body>
 </html>
