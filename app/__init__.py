@@ -23,8 +23,12 @@ def create_app():
     app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
     app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME', 'noreply@scholarviews.com')
 
+    # Stripe (set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET env vars)
+    app.config['STRIPE_SECRET_KEY'] = os.environ.get('STRIPE_SECRET_KEY', '')
+    app.config['STRIPE_WEBHOOK_SECRET'] = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+
     # Import models so Flask-Migrate picks them up
-    from .models import availability, booking  # noqa: F401
+    from .models import availability, booking, order  # noqa: F401
 
     db.init_app(app)
     migrate = Migrate(app, db)

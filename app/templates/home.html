@@ -211,8 +211,13 @@
 <script>
 (function () {
   var companies = [
-    'apple.com', 'microsoft.com', 'google.com', 'amazon.com',
-    'meta.com', 'nvidia.com', 'tesla.com'
+    { name: 'Apple',     file: 'apple.png',     bg: '#fff' },
+    { name: 'Microsoft', file: 'microsoft.png',  bg: '#fff' },
+    { name: 'Google',    file: 'google.png',     bg: '#fff' },
+    { name: 'Amazon',    file: 'amazon.png',     bg: '#fff' },
+    { name: 'Meta',      file: 'meta.png',       bg: '#fff' },
+    { name: 'Nvidia',    file: 'nvidia.png',     bg: '#fff' },
+    { name: 'Tesla',     file: 'tesla.png',      bg: '#fff' },
   ];
   var stage = document.getElementById('orbit-stage');
   if (!stage) return;
@@ -234,12 +239,18 @@
   pathEl.setAttribute('d', 'M' + pts.join('L'));
 
   // Logo elements
-  var logoEls = companies.map(function (domain) {
+  var logoEls = companies.map(function (c) {
     var wrap = document.createElement('div');
-    wrap.style.cssText = 'position:absolute;width:' + LOGO + 'px;height:' + LOGO + 'px;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,0.28);';
+    wrap.style.cssText = 'position:absolute;width:' + LOGO + 'px;height:' + LOGO + 'px;border-radius:10px;overflow:hidden;background:' + c.bg + ';box-shadow:0 4px 16px rgba(0,0,0,0.28);display:flex;align-items:center;justify-content:center;';
     var img = document.createElement('img');
-    img.src = 'https://logo.clearbit.com/' + domain;
-    img.style.cssText = 'width:100%;height:100%;object-fit:contain;padding:5px;';
+    img.src = '/static/logos/' + c.file;
+    img.alt = c.name;
+    img.style.cssText = 'width:80%;height:80%;object-fit:contain;';
+    img.onerror = function () {
+      // fallback: show company initial if logo file missing
+      wrap.style.background = c.bg;
+      wrap.innerHTML = '<span style="color:#fff;font-weight:800;font-size:0.65rem;letter-spacing:0.5px;">' + c.name.substring(0,4).toUpperCase() + '</span>';
+    };
     wrap.appendChild(img);
     stage.appendChild(wrap);
     return wrap;

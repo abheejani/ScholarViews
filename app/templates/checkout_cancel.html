@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Payment Cancelled — ScholarViews{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Payment Cancelled</h1>
+    <p>No charge was made to your account.</p>
+  </div>
+</div>
+
+<div class="container pb-5" style="max-width:560px;">
+  <div class="sv-card" style="text-align:center;padding:3rem 2rem;">
+    <div style="font-size:3rem;margin-bottom:1rem;">&#128533;</div>
+    <h2 style="font-weight:800;color:var(--navy);letter-spacing:-0.5px;margin-bottom:0.5rem;">Payment cancelled</h2>
+    <p style="color:var(--gray);margin-bottom:2rem;">
+      No worries — you were not charged. Head back to pricing whenever you're ready.
+    </p>
+    <a href="{{ url_for('main.pricing') }}" class="btn-sv-primary" style="margin-right:0.75rem;">View Pricing</a>
+    <a href="{{ url_for('main.dashboard') }}" class="btn-sv-ghost">Go to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

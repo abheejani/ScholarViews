@@ -14,6 +14,10 @@ class User(db.Model, UserMixin):
     session_credits = db.Column(db.Integer, default=0)
     mentoring_credits = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_verified = db.Column(db.Boolean, nullable=False, default=False)
+    verification_token = db.Column(db.String(200), nullable=True)
+    reset_token = db.Column(db.String(200), nullable=True)
+    reset_token_expiry = db.Column(db.DateTime, nullable=True)
 
     __table_args__ = (
         db.UniqueConstraint('email', name='uq_user_email'),

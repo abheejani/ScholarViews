@@ -153,6 +153,17 @@
 {% endif %}
 {% endwith %}
 
+{% if current_user.is_authenticated and not current_user.is_verified %}
+<div class="container" style="padding-top:0.75rem;">
+  <div class="alert alert-warning" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+    <span>&#9888; Please verify your email address to unlock session booking.</span>
+    <form method="POST" action="{{ url_for('auth.resend_verification') }}" style="margin:0;">
+      <button type="submit" style="background:none;border:none;color:#d97706;font-weight:700;font-size:0.875rem;cursor:pointer;text-decoration:underline;padding:0;">Resend verification email</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
 {% block content %}{% endblock %}
 
 {% block footer %}{% endblock %}

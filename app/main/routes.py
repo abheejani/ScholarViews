@@ -1,19 +1,44 @@
 import os
 import json
+import stripe
 from functools import wraps
 from datetime import datetime, date, timedelta
 
 from flask import (Blueprint, render_template, request, redirect,
-                   url_for, flash, current_app)
+                   url_for, flash, current_app, jsonify)
 from flask_login import login_required, current_user
 from flask_mail import Message
+from sqlalchemy import update as sa_update
 
 from app import db, mail
 from app.models.user import User
 from app.models.availability import Availability
 from app.models.booking import Booking
+from app.models.order import Order
 
 main_bp = Blueprint('main', __name__)
+
+# Stripe plan definitions
+PLANS = {
+    'starter': {
+        'name': 'Starter',
+        'amount': 2000,          # cents
+        'session_credits': 1,
+        'mentoring_credits': 0,
+    },
+    'popular': {
+        'name': 'Popular',
+        'amount': 18000,
+        'session_credits': 10,
+        'mentoring_credits': 5,
+    },
+    'best_value': {
+        'name': 'Best Value',
+        'amount': 30000,
+        'session_credits': 20,
+        'mentoring_credits': 10,
+    },
+}
 
 
 # ── Role decorators ──────────────────────────────────────────────────────────
@@ -115,23 +140,24 @@ def book_slot(availability_id):
         flash('Interviewers cannot book sessions.', 'error')
         return redirect(url_for('main.schedule'))
 
-    session_type = request.form.get('session_type', 'mock_interview')
-    slot = Availability.query.get_or_404(availability_id)
-
-    if slot.is_booked:
-        flash('That slot was just booked by someone else.', 'error')
+    if not current_user.is_verified:
+        flash('Please verify your email address before booking sessions.', 'error')
         return redirect(url_for('main.schedule'))
 
-    # Credit checks per session type
-    if session_type == 'mock_interview':
-        if current_user.session_credits < 1:
-            flash('No session credits — purchase a package to book mock interviews.', 'error')
-            return redirect(url_for('main.pricing'))
-    elif session_type == 'mentoring':
-        if current_user.mentoring_credits < 1:
-            flash('No mentoring credits — upgrade your package to access career mentoring.', 'error')
-            return redirect(url_for('main.pricing'))
-    # resume_review and linkedin_review are free
+    session_type = request.form.get('session_type', 'mock_interview')
+
+    # Credit check before touching the DB
+    if session_type == 'mock_interview' and current_user.session_credits < 1:
+        flash('No session credits — purchase a package to book mock interviews.', 'error')
+        return redirect(url_for('main.pricing'))
+    elif session_type == 'mentoring' and current_user.mentoring_credits < 1:
+        flash('No mentoring credits — upgrade your package to access career mentoring.', 'error')
+        return redirect(url_for('main.pricing'))
+
+    slot = db.session.get(Availability, availability_id)
+    if slot is None:
+        flash('Slot not found.', 'error')
+        return redirect(url_for('main.schedule'))
 
     type_labels = {
         'mock_interview': 'Mock Interview',
@@ -141,11 +167,25 @@ def book_slot(availability_id):
     }
 
     try:
-        slot.is_booked = True
+        # Atomic claim: UPDATE WHERE is_booked=False — prevents double-booking
+        # even under concurrent requests. rowcount=0 means someone else got it first.
+        result = db.session.execute(
+            sa_update(Availability)
+            .where(Availability.id == availability_id)
+            .where(Availability.is_booked == False)  # noqa: E712
+            .values(is_booked=True)
+            .execution_options(synchronize_session=False)
+        )
+        if result.rowcount == 0:
+            db.session.rollback()
+            flash('That slot was just booked by someone else.', 'error')
+            return redirect(url_for('main.schedule'))
+
         if session_type == 'mock_interview':
             current_user.session_credits -= 1
         elif session_type == 'mentoring':
             current_user.mentoring_credits -= 1
+
         booking = Booking(
             client_id=current_user.id,
             interviewer_id=slot.interviewer_id,
@@ -252,6 +292,171 @@ def our_interviewers():
 @main_bp.route('/faq')
 def faq():
     return render_template('faq.html')
+
+
+# ── Stripe checkout ───────────────────────────────────────────────────────────
+
+@main_bp.route('/checkout/create', methods=['POST'])
+@login_required
+def checkout_create():
+    secret_key = current_app.config.get('STRIPE_SECRET_KEY', '')
+    if not secret_key:
+        flash('Payment processing is not configured yet. Email scholarviewsinc@gmail.com to purchase credits.', 'warning')
+        return redirect(url_for('main.pricing'))
+
+    plan_key = request.form.get('plan', '')
+    plan = PLANS.get(plan_key)
+    if not plan:
+        flash('Invalid plan selected.', 'error')
+        return redirect(url_for('main.pricing'))
+
+    stripe.api_key = secret_key
+
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'unit_amount': plan['amount'],
+                    'product_data': {
+                        'name': f'ScholarViews — {plan["name"]} Package',
+                        'description': (
+                            f'{plan["session_credits"]} session credit(s)'
+                            + (f' + {plan["mentoring_credits"]} mentoring credit(s)'
+                               if plan['mentoring_credits'] else '')
+                        ),
+                    },
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            metadata={
+                'user_id': str(current_user.id),
+                'plan': plan_key,
+            },
+            success_url=url_for('main.checkout_success', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=url_for('main.checkout_cancel', _external=True),
+        )
+        return redirect(session.url, code=303)
+    except stripe.error.StripeError as e:
+        flash(f'Payment error: {e.user_message}', 'error')
+        return redirect(url_for('main.pricing'))
+
+
+@main_bp.route('/checkout/success')
+@login_required
+def checkout_success():
+    secret_key = current_app.config.get('STRIPE_SECRET_KEY', '')
+    session_id = request.args.get('session_id', '')
+
+    if not secret_key or not session_id:
+        return redirect(url_for('main.dashboard'))
+
+    stripe.api_key = secret_key
+
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+    except stripe.error.StripeError:
+        flash('Could not verify payment. Contact us if credits were not added.', 'error')
+        return redirect(url_for('main.dashboard'))
+
+    if session.payment_status != 'paid':
+        flash('Payment not completed.', 'error')
+        return redirect(url_for('main.pricing'))
+
+    # Idempotency: skip if this session was already fulfilled
+    if Order.query.filter_by(stripe_session_id=session_id).first():
+        flash('Credits already applied to your account.', 'info')
+        return redirect(url_for('main.dashboard'))
+
+    plan_key = session.metadata.get('plan', '')
+    user_id = session.metadata.get('user_id', '')
+    plan = PLANS.get(plan_key)
+
+    if not plan or not user_id:
+        flash('Payment verified but plan details missing. Contact scholarviewsinc@gmail.com.', 'warning')
+        return redirect(url_for('main.dashboard'))
+
+    user = db.session.get(User, int(user_id))
+    if user is None:
+        flash('Payment verified but account not found. Contact scholarviewsinc@gmail.com.', 'warning')
+        return redirect(url_for('main.dashboard'))
+
+    try:
+        user.session_credits += plan['session_credits']
+        user.mentoring_credits += plan['mentoring_credits']
+        order = Order(
+            user_id=user.id,
+            stripe_session_id=session_id,
+            plan=plan_key,
+            session_credits_granted=plan['session_credits'],
+            mentoring_credits_granted=plan['mentoring_credits'],
+        )
+        db.session.add(order)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        flash('Payment verified but credits could not be applied. Contact scholarviewsinc@gmail.com.', 'error')
+        return redirect(url_for('main.dashboard'))
+
+    return render_template('checkout_success.html', plan=plan)
+
+
+@main_bp.route('/checkout/cancel')
+@login_required
+def checkout_cancel():
+    return render_template('checkout_cancel.html')
+
+
+@main_bp.route('/checkout/webhook', methods=['POST'])
+def checkout_webhook():
+    """Stripe webhook — backup fulfillment in case the success redirect fails."""
+    webhook_secret = current_app.config.get('STRIPE_WEBHOOK_SECRET', '')
+    if not webhook_secret:
+        return jsonify({'status': 'webhook secret not configured'}), 200
+
+    payload = request.get_data()
+    sig_header = request.headers.get('Stripe-Signature', '')
+    stripe.api_key = current_app.config.get('STRIPE_SECRET_KEY', '')
+
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
+    except (ValueError, stripe.error.SignatureVerificationError):
+        return jsonify({'error': 'invalid payload'}), 400
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        if session.get('payment_status') != 'paid':
+            return jsonify({'status': 'not paid'}), 200
+
+        session_id = session['id']
+        if Order.query.filter_by(stripe_session_id=session_id).first():
+            return jsonify({'status': 'already fulfilled'}), 200
+
+        plan_key = session.get('metadata', {}).get('plan', '')
+        user_id = session.get('metadata', {}).get('user_id', '')
+        plan = PLANS.get(plan_key)
+
+        if plan and user_id:
+            user = db.session.get(User, int(user_id))
+            if user:
+                try:
+                    user.session_credits += plan['session_credits']
+                    user.mentoring_credits += plan['mentoring_credits']
+                    order = Order(
+                        user_id=user.id,
+                        stripe_session_id=session_id,
+                        plan=plan_key,
+                        session_credits_granted=plan['session_credits'],
+                        mentoring_credits_granted=plan['mentoring_credits'],
+                    )
+                    db.session.add(order)
+                    db.session.commit()
+                except Exception:
+                    db.session.rollback()
+
+    return jsonify({'status': 'ok'}), 200
 
 
 # ── Interviewer pages ─────────────────────────────────────────────────────────

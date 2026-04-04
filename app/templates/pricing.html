@@ -50,7 +50,14 @@
           <li>Behavioral + technical coverage</li>
           <li>Full platform access</li>
         </ul>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('main.checkout_create') }}">
+          <input type="hidden" name="plan" value="starter">
+          <button type="submit" class="btn-sv-ghost" style="width:100%;">Buy Now</button>
+        </form>
+        {% else %}
         <a href="{{ url_for('auth.signup') }}" class="btn-sv-ghost" style="width:100%;text-align:center;">Get Started</a>
+        {% endif %}
       </div>
     </div>
     <div class="col-md-4">
@@ -67,7 +74,14 @@
           <li>Unlimited resume &amp; LinkedIn review</li>
           <li>Full platform access</li>
         </ul>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('main.checkout_create') }}">
+          <input type="hidden" name="plan" value="popular">
+          <button type="submit" class="btn-sv-primary" style="width:100%;">Buy Now</button>
+        </form>
+        {% else %}
         <a href="{{ url_for('auth.signup') }}" class="btn-sv-primary" style="width:100%;text-align:center;">Get Started</a>
+        {% endif %}
       </div>
     </div>
     <div class="col-md-4">
@@ -84,7 +98,14 @@
           <li>Priority scheduling</li>
           <li>Full platform access</li>
         </ul>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('main.checkout_create') }}">
+          <input type="hidden" name="plan" value="best_value">
+          <button type="submit" class="btn-sv-ghost" style="width:100%;">Buy Now</button>
+        </form>
+        {% else %}
         <a href="{{ url_for('auth.signup') }}" class="btn-sv-ghost" style="width:100%;text-align:center;">Get Started</a>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -110,7 +131,7 @@
       </div>
       <div class="faq-item">
         <h6>How do I pay?</h6>
-        <p>Secure payment processing is coming soon. For now, reach out to us at <a href="mailto:scholarviewsinc@gmail.com" style="color:var(--indigo);font-weight:600;">scholarviewsinc@gmail.com</a> to get started and we will set up your account manually.</p>
+        <p>Payments are processed securely via Stripe. Click any "Buy Now" button above and you will be taken to a secure checkout page. Credits are added to your account immediately after payment.</p>
       </div>
     </div>
   </div>
