@@ -1,6 +1,7 @@
 import os
+import json
 from functools import wraps
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from flask import (Blueprint, render_template, request, redirect,
                    url_for, flash, current_app)
@@ -52,25 +53,59 @@ def dashboard():
                 .filter(Availability.date >= date.today())
                 .order_by(Availability.date, Availability.start_time)
                 .limit(5).all())
-    return render_template('dashboard.html', upcoming=upcoming)
+    admin_data = None
+    if current_user.is_admin:
+        admin_data = {
+            'total_users': User.query.count(),
+            'total_clients': User.query.filter_by(role='client').count(),
+            'total_interviewers': User.query.filter_by(role='interviewer').count(),
+            'total_bookings': Booking.query.count(),
+            'recent_bookings': (Booking.query
+                                .order_by(Booking.created_at.desc())
+                                .limit(8).all()),
+        }
+    return render_template('dashboard.html', upcoming=upcoming, admin_data=admin_data)
 
 
 @main_bp.route('/schedule')
 @login_required
 def schedule():
-    slots = (Availability.query
-             .filter_by(is_booked=False)
-             .filter(Availability.date >= date.today())
-             .order_by(Availability.date, Availability.start_time)
-             .all())
-    # Group by interviewer
-    grouped = {}
-    for slot in slots:
-        iid = slot.interviewer_id
-        if iid not in grouped:
-            grouped[iid] = {'interviewer': slot.interviewer, 'slots': []}
-        grouped[iid]['slots'].append(slot)
-    return render_template('schedule.html', grouped=grouped)
+    end_date = date.today() + timedelta(days=42)
+    query = Availability.query.filter(
+        Availability.date >= date.today(),
+        Availability.date <= end_date
+    )
+    if current_user.role == 'interviewer':
+        query = query.filter_by(interviewer_id=current_user.id)
+    slots = query.order_by(Availability.date, Availability.start_time).all()
+
+    slots_data = []
+    for s in slots:
+        d = {
+            'id': s.id,
+            'date': s.date.isoformat(),
+            'start': s.start_time,
+            'end': s.end_time,
+            'interviewer': s.interviewer.username,
+            'interviewer_id': s.interviewer_id,
+            'booked': s.is_booked,
+            'booked_by': '',
+            'session_type': '',
+        }
+        if s.is_booked and s.booking:
+            d['booked_by'] = s.booking.client.username if s.booking.client else ''
+            d['session_type'] = s.booking.session_type or 'mock_interview'
+        slots_data.append(d)
+
+    user_credits = {
+        'session': current_user.session_credits,
+        'mentoring': current_user.mentoring_credits,
+    }
+    return render_template('schedule.html',
+        slots_json=json.dumps(slots_data),
+        user_credits_json=json.dumps(user_credits),
+        today=date.today().isoformat()
+    )
 
 
 @main_bp.route('/schedule/book/<int:availability_id>', methods=['POST'])
@@ -80,27 +115,47 @@ def book_slot(availability_id):
         flash('Interviewers cannot book sessions.', 'error')
         return redirect(url_for('main.schedule'))
 
+    session_type = request.form.get('session_type', 'mock_interview')
     slot = Availability.query.get_or_404(availability_id)
 
     if slot.is_booked:
         flash('That slot was just booked by someone else.', 'error')
         return redirect(url_for('main.schedule'))
 
-    if current_user.session_credits < 1:
-        flash('You have no session credits. Purchase a package to book.', 'error')
-        return redirect(url_for('main.pricing'))
+    # Credit checks per session type
+    if session_type == 'mock_interview':
+        if current_user.session_credits < 1:
+            flash('No session credits — purchase a package to book mock interviews.', 'error')
+            return redirect(url_for('main.pricing'))
+    elif session_type == 'mentoring':
+        if current_user.mentoring_credits < 1:
+            flash('No mentoring credits — upgrade your package to access career mentoring.', 'error')
+            return redirect(url_for('main.pricing'))
+    # resume_review and linkedin_review are free
+
+    type_labels = {
+        'mock_interview': 'Mock Interview',
+        'resume_review': 'Resume Review',
+        'linkedin_review': 'LinkedIn Review',
+        'mentoring': 'Career Mentoring',
+    }
 
     try:
         slot.is_booked = True
-        current_user.session_credits -= 1
+        if session_type == 'mock_interview':
+            current_user.session_credits -= 1
+        elif session_type == 'mentoring':
+            current_user.mentoring_credits -= 1
         booking = Booking(
             client_id=current_user.id,
             interviewer_id=slot.interviewer_id,
-            availability_id=slot.id
+            availability_id=slot.id,
+            session_type=session_type
         )
         db.session.add(booking)
         db.session.commit()
-        flash(f'Session booked for {slot.date.strftime("%B %d")} at {slot.start_time}!', 'success')
+        label = type_labels.get(session_type, session_type)
+        flash(f'{label} booked for {slot.date.strftime("%B %d")} at {slot.start_time}!', 'success')
     except Exception:
         db.session.rollback()
         flash('Something went wrong. Please try again.', 'error')
@@ -143,6 +198,34 @@ def resume_review():
         return redirect(url_for('main.resume_review'))
 
     return render_template('resume_review.html')
+
+
+@main_bp.route('/linkedin-review', methods=['GET', 'POST'])
+@login_required
+def linkedin_review():
+    if request.method == 'POST':
+        linkedin_url = request.form.get('linkedin_url', '').strip()
+        notes = request.form.get('notes', '').strip()
+        if not linkedin_url:
+            flash('Please provide your LinkedIn profile URL.', 'error')
+            return redirect(url_for('main.linkedin_review'))
+        try:
+            msg = Message(
+                subject=f'LinkedIn Review — {current_user.username}',
+                recipients=['scholarviewsinc@gmail.com'],
+                body=(
+                    f'LinkedIn review requested by {current_user.username} ({current_user.email})\n'
+                    f'Profile: {linkedin_url}\n'
+                    f'Notes: {notes or "None"}\n'
+                    f'Submitted: {datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")}'
+                )
+            )
+            mail.send(msg)
+            flash('LinkedIn profile submitted! Expect feedback within 48 hours.', 'success')
+        except Exception:
+            flash('Request received but email delivery failed — contact us directly.', 'warning')
+        return redirect(url_for('main.linkedin_review'))
+    return render_template('linkedin_review.html')
 
 
 @main_bp.route('/grad-studies')

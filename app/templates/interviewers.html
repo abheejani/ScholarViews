@@ -39,6 +39,7 @@
         <div class="interviewer-avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">A</div>
         <div class="interviewer-name">Abhee J.</div>
         <div class="interviewer-role">Software Engineer &amp; Platform Founder</div>
+        <p style="font-size:0.78rem;color:var(--gray);margin-bottom:0.5rem;">&#128204; 3+ years experience &nbsp;&#183;&nbsp; <a href="https://www.linkedin.com/in/abheejani/" target="_blank" rel="noopener" style="color:var(--indigo);font-weight:600;">LinkedIn &#8599;</a></p>
         <p class="interviewer-bio">Built and maintains the ScholarViews platform. Has interviewed at and received offers from multiple Mag7 companies. Specializes in system design and algorithms.</p>
         <div style="margin-bottom:0.75rem;">
           <span class="company-tag" style="background:#eef2ff;color:#4f46e5;">Mag7 Experience</span>
@@ -107,7 +108,18 @@
   <div class="apply-strip">
     <h3>Are You an Engineer at a Top Company?</h3>
     <p>Join ScholarViews as an interviewer. Set your own hours, make extra income, and help the next generation of engineers break in.</p>
-    <a href="mailto:scholarviewsinc@gmail.com?subject=Interviewer Application" class="btn-sv-primary">Apply to Be an Interviewer</a>
+    <a href="mailto:scholarviewsinc@gmail.com?subject=John%20Doe%20Join%20Team" class="btn-sv-primary" onclick="setInterviewerSubject(event)">Apply to Be an Interviewer</a>
+    <p style="color:#94a3b8;font-size:0.78rem;margin-top:0.75rem;">Email subject format: <strong style="color:#a5b4fc;">First Last Join Team</strong> (e.g. John Doe Join Team)</p>
+<script>
+function setInterviewerSubject(e) {
+  var name = window.prompt('Enter your full name for the subject line (e.g. John Doe):');
+  if (name && name.trim()) {
+    e.preventDefault();
+    var subject = encodeURIComponent(name.trim() + ' Join Team');
+    window.location.href = 'mailto:scholarviewsinc@gmail.com?subject=' + subject;
+  }
+}
+</script>
   </div>
 </div>
 {% endblock %}

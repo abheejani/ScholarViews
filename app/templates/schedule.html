@@ -3,64 +3,503 @@
 
 {% block head %}
 <style>
-  .interviewer-card { background: #fff; border: 1.5px solid var(--border); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.5rem; }
-  .interviewer-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
-  .interviewer-avatar { width: 48px; height: 48px; background: linear-gradient(135deg, var(--indigo), var(--indigo-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
-  .interviewer-name { font-weight: 700; font-size: 1rem; color: var(--navy); margin: 0 0 0.15rem; }
-  .interviewer-role { font-size: 0.82rem; color: var(--gray); }
-  .slots-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-  .slot-btn { background: var(--light); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.5rem 0.9rem; font-size: 0.82rem; font-weight: 600; color: var(--slate); cursor: pointer; transition: border-color 0.15s, background 0.15s; white-space: nowrap; font-family: inherit; }
-  .slot-btn:hover:not(:disabled) { border-color: var(--indigo); background: #eef2ff; color: var(--indigo); }
-  .slot-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-  .no-credits-banner { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
-  .empty-state { text-align: center; padding: 4rem 0; color: var(--gray); }
-  .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+  /* ── Calendar shell ── */
+  .cal-wrap { background: #fff; border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .cal-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1.5px solid var(--border); flex-wrap: wrap; gap: 0.75rem; }
+  .cal-nav { display: flex; align-items: center; gap: 0.5rem; }
+  .cal-nav-btn { background: #f8fafc; border: 1.5px solid var(--border); border-radius: 8px; padding: 0.35rem 0.75rem; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--slate); transition: border-color 0.15s; }
+  .cal-nav-btn:hover { border-color: var(--indigo); color: var(--indigo); }
+  .cal-title { font-weight: 700; font-size: 0.95rem; color: var(--navy); min-width: 160px; text-align: center; }
+  .view-toggle { display: flex; background: #f1f5f9; border-radius: 8px; padding: 3px; gap: 2px; }
+  .vt-btn { border: none; background: transparent; padding: 0.3rem 0.85rem; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--gray); transition: background 0.15s, color 0.15s; }
+  .vt-btn.active { background: #fff; color: var(--navy); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .btn-add-slot { background: var(--indigo); color: #fff; border: none; border-radius: 8px; padding: 0.4rem 1rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 0.4rem; transition: background 0.15s; }
+  .btn-add-slot:hover { background: var(--indigo-dark); }
+
+  /* ── Week view ── */
+  .cal-week-grid { display: grid; grid-template-columns: 60px repeat(7, 1fr); overflow-x: auto; min-width: 500px; }
+  .cal-corner { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); background: #fafafa; }
+  .cal-day-head { padding: 0.65rem 0.25rem; text-align: center; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); background: #fafafa; }
+  .cal-day-head .day-name { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); }
+  .cal-day-head .day-num { font-size: 1.2rem; font-weight: 800; color: var(--navy); line-height: 1.2; }
+  .cal-day-head.today .day-num { background: var(--indigo); color: #fff; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 1rem; }
+  .cal-hour-label { border-right: 1px solid var(--border); border-bottom: 1px solid #f1f5f9; padding: 0.4rem 0.5rem; font-size: 0.7rem; font-weight: 600; color: var(--gray); text-align: right; background: #fafafa; vertical-align: top; min-height: 52px; display: flex; align-items: flex-start; justify-content: flex-end; padding-top: 6px; }
+  .cal-cell { border-right: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; min-height: 52px; padding: 3px; vertical-align: top; position: relative; cursor: default; transition: background 0.1s; }
+  .cal-cell.clickable:hover { background: #fafafe; cursor: pointer; }
+  .cal-cell:last-child { border-right: none; }
+
+  /* ── Slot cards in grid ── */
+  .slot-chip { border-radius: 6px; padding: 3px 7px; font-size: 0.72rem; font-weight: 700; margin-bottom: 2px; cursor: pointer; line-height: 1.4; border: 1px solid transparent; }
+  .slot-chip-avail { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+  .slot-chip-avail:hover { background: #bbf7d0; }
+  .slot-chip-booked { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; cursor: default; }
+  .slot-chip-mine { background: #eef2ff; color: #4338ca; border-color: #c7d2fe; cursor: default; }
+
+  /* ── Month view ── */
+  .cal-month-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+  .cal-month-head { padding: 0.6rem; text-align: center; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); border-bottom: 1px solid var(--border); background: #fafafa; }
+  .cal-month-cell { min-height: 80px; padding: 6px; border-right: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.1s; }
+  .cal-month-cell:last-child { border-right: none; }
+  .cal-month-cell:hover { background: #fafafe; }
+  .cal-month-cell.other-month .mday-num { color: #cbd5e1; }
+  .cal-month-cell.today-cell .mday-num { background: var(--indigo); color: #fff; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+  .mday-num { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .mday-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #16a34a; margin: 1px; }
+  .mday-dot-booked { background: #3b82f6; }
+
+  /* ── Day view ── */
+  .day-view-slot { background: #fff; border: 1.5px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+  .day-view-slot:hover:not(.slot-booked-row) { border-color: var(--indigo); box-shadow: 0 4px 12px rgba(99,102,241,0.1); }
+  .slot-time-badge { background: #eef2ff; color: var(--indigo); font-weight: 700; font-size: 0.78rem; padding: 0.3rem 0.6rem; border-radius: 6px; white-space: nowrap; flex-shrink: 0; }
+  .slot-booked-row { cursor: default; opacity: 0.75; }
+  .empty-day { text-align: center; padding: 3rem; color: var(--gray); }
+
+  /* ── Modals ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.hidden { display: none; }
+  .modal-box { background: #fff; border-radius: 18px; padding: 1.75rem; width: 100%; max-width: 420px; box-shadow: 0 24px 60px rgba(0,0,0,0.25); }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+  .modal-head h5 { font-weight: 800; color: var(--navy); margin: 0; font-size: 1.05rem; }
+  .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--gray); line-height: 1; padding: 0; }
+  .slot-info-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; }
+  .slot-info-box p { margin: 0; font-size: 0.875rem; color: var(--slate); }
+  .slot-info-box strong { color: var(--navy); }
+  .type-option { border: 1.5px solid var(--border); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 0.5rem; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+  .type-option:hover { border-color: var(--indigo); background: #fafafe; }
+  .type-option.selected { border-color: var(--indigo); background: #eef2ff; }
+  .type-option.disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+  .type-option-name { font-weight: 700; font-size: 0.88rem; color: var(--navy); }
+  .type-option-meta { font-size: 0.78rem; color: var(--gray); margin-top: 0.15rem; }
+  .form-label-sm { font-weight: 600; font-size: 0.82rem; color: var(--slate); margin-bottom: 0.35rem; display: block; }
+  .form-ctrl { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 0.55rem 0.85rem; font-size: 0.88rem; color: var(--navy); font-family: inherit; outline: none; transition: border-color 0.15s; }
+  .form-ctrl:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page-header">
   <div class="container">
-    <h1>Book a Session</h1>
-    <p>Pick a time that works for you from our available engineers. Each session = 1 hour.</p>
+    <h1>Schedule a Session</h1>
+    <p>Book a mock interview, resume review, LinkedIn review, or career mentoring session.</p>
   </div>
 </div>
 
 <div class="container pb-5">
-  {% if current_user.session_credits < 1 %}
-  <div class="no-credits-banner">
-    <span style="font-size:1.25rem;">&#9888;&#65039;</span>
-    <p style="margin:0;font-size:0.875rem;color:#92400e;">You have no session credits. <a href="{{ url_for('main.pricing') }}" style="color:#92400e;font-weight:700;">Purchase a package</a> to book sessions.</p>
-  </div>
-  {% endif %}
-
-  {% if grouped %}
-    {% for interviewer_id, data in grouped.items() %}
-    <div class="interviewer-card">
-      <div class="interviewer-header">
-        <div class="interviewer-avatar">{{ data.interviewer.username[0].upper() }}</div>
-        <div>
-          <p class="interviewer-name">{{ data.interviewer.username }}</p>
-          <span class="interviewer-role">Software Engineer / Interviewer</span>
-        </div>
+  <div class="cal-wrap">
+    <!-- Toolbar -->
+    <div class="cal-toolbar">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" id="btn-prev">&#8592;</button>
+        <button class="cal-nav-btn" id="btn-today">Today</button>
+        <button class="cal-nav-btn" id="btn-next">&#8594;</button>
+        <span class="cal-title" id="cal-title"></span>
       </div>
-      <div class="slots-grid">
-        {% for slot in data.slots %}
-        <form method="POST" action="{{ url_for('main.book_slot', availability_id=slot.id) }}" style="display:inline;">
-          <button type="submit" class="slot-btn" {% if current_user.session_credits < 1 %}disabled{% endif %}>
-            {{ slot.date.strftime('%b %d') }} &nbsp; {{ slot.start_time }}&#8211;{{ slot.end_time }}
-          </button>
-        </form>
-        {% endfor %}
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+        <div class="view-toggle">
+          <button class="vt-btn active" data-view="week">Week</button>
+          <button class="vt-btn" data-view="day">Day</button>
+          <button class="vt-btn" data-view="month">Month</button>
+        </div>
+        {% if current_user.role in ('interviewer', 'admin') %}
+        <button class="btn-add-slot" id="btn-add-slot">&#43; Add Slot</button>
+        {% endif %}
       </div>
     </div>
-    {% endfor %}
-  {% else %}
-  <div class="empty-state">
-    <div class="icon">&#128197;</div>
-    <h5 style="color:var(--navy);font-weight:700;">No slots available right now</h5>
-    <p>Check back soon — our interviewers update their availability regularly.</p>
+    <!-- Calendar body -->
+    <div id="cal-body"></div>
   </div>
-  {% endif %}
 </div>
+
+<!-- Booking Modal (clients) -->
+{% if current_user.role == 'client' %}
+<div class="modal-overlay hidden" id="booking-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h5>Book a Session</h5>
+      <button class="modal-close" onclick="closeModal('booking-modal')">&#215;</button>
+    </div>
+    <div class="slot-info-box" id="bm-slot-info"></div>
+    <form id="booking-form" method="POST">
+      <input type="hidden" name="session_type" id="bm-session-type" value="mock_interview">
+      <div style="margin-bottom:1rem;">
+        <div class="form-label-sm" style="margin-bottom:0.6rem;">Session Type</div>
+        <div class="type-option selected" data-type="mock_interview" onclick="selectType(this)">
+          <div class="type-option-name">&#127919; Mock Interview</div>
+          <div class="type-option-meta">Uses 1 session credit &nbsp;&#183;&nbsp; You have <span id="bm-session-credits">{{ current_user.session_credits }}</span></div>
+        </div>
+        <div class="type-option" data-type="resume_review" onclick="selectType(this)">
+          <div class="type-option-name">&#128196; Resume Review</div>
+          <div class="type-option-meta">Free &nbsp;&#183;&nbsp; Unlimited for all members</div>
+        </div>
+        <div class="type-option" data-type="linkedin_review" onclick="selectType(this)">
+          <div class="type-option-name">&#128101; LinkedIn Review</div>
+          <div class="type-option-meta">Free &nbsp;&#183;&nbsp; Unlimited for all members</div>
+        </div>
+        <div class="type-option {% if current_user.mentoring_credits < 1 %}disabled{% endif %}" data-type="mentoring" onclick="selectType(this)">
+          <div class="type-option-name">&#127775; Career Mentoring</div>
+          <div class="type-option-meta">Uses 1 mentoring credit &nbsp;&#183;&nbsp; You have <span id="bm-mentoring-credits">{{ current_user.mentoring_credits }}</span>{% if current_user.mentoring_credits < 1 %} &mdash; <a href="{{ url_for('main.pricing') }}" style="color:var(--indigo);font-weight:600;">upgrade</a>{% endif %}</div>
+        </div>
+      </div>
+      <button type="submit" class="btn-sv-primary" style="width:100%;text-align:center;">Confirm Booking</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<!-- Add Slot Modal (interviewers / admin) -->
+{% if current_user.role in ('interviewer', 'admin') %}
+<div class="modal-overlay hidden" id="add-slot-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h5>Add Availability Slot</h5>
+      <button class="modal-close" onclick="closeModal('add-slot-modal')">&#215;</button>
+    </div>
+    <form method="POST" action="{{ url_for('main.add_availability') }}">
+      <div class="mb-3">
+        <label class="form-label-sm">Date</label>
+        <input type="date" name="date" id="add-slot-date" class="form-ctrl" required>
+      </div>
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <label class="form-label-sm">Start Time</label>
+          <input type="time" name="start_time" id="add-slot-start" class="form-ctrl" required>
+        </div>
+        <div class="col-6">
+          <label class="form-label-sm">End Time</label>
+          <input type="time" name="end_time" id="add-slot-end" class="form-ctrl" required>
+        </div>
+      </div>
+      <button type="submit" class="btn-sv-primary" style="width:100%;text-align:center;">Add Slot</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+const SLOTS        = {{ slots_json | safe }};
+const USER_CREDITS = {{ user_credits_json | safe }};
+const USER_ROLE    = '{{ current_user.role }}';
+const USER_ID      = {{ current_user.id }};
+const TODAY_ISO    = '{{ today }}';
+const BOOK_BASE    = '{{ url_for("main.book_slot", availability_id=0) }}'.replace('/0', '/');
+
+let currentDate = new Date(TODAY_ISO + 'T00:00:00');
+let currentView = 'week';
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function isoOf(d) {
+  return d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0');
+}
+
+function addDays(d, n) {
+  const r = new Date(d); r.setDate(r.getDate() + n); return r;
+}
+
+function fmtHour(h) {
+  if (h === 0) return '12 AM';
+  if (h < 12) return h + ' AM';
+  if (h === 12) return '12 PM';
+  return (h-12) + ' PM';
+}
+
+function fmtDate(d) {
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function dayName(d) {
+  return d.toLocaleDateString('en-US', { weekday: 'short' });
+}
+
+function getWeekStart(d) {
+  const r = new Date(d);
+  const day = r.getDay(); // 0=Sun
+  r.setDate(r.getDate() - (day === 0 ? 6 : day - 1)); // Mon start
+  return r;
+}
+
+function slotsForDate(iso) {
+  return SLOTS.filter(s => s.date === iso);
+}
+
+function timeToHour(t) {
+  return parseInt(t.split(':')[0], 10);
+}
+
+function typeLabel(t) {
+  const m = { mock_interview: 'Mock Interview', resume_review: 'Resume Review',
+               linkedin_review: 'LinkedIn Review', mentoring: 'Mentoring' };
+  return m[t] || t;
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+
+function render() {
+  if (currentView === 'week') renderWeek();
+  else if (currentView === 'day') renderDay();
+  else renderMonth();
+  updateTitle();
+}
+
+function updateTitle() {
+  const el = document.getElementById('cal-title');
+  if (currentView === 'week') {
+    const ws = getWeekStart(currentDate);
+    const we = addDays(ws, 6);
+    el.textContent = fmtDate(ws) + ' – ' + fmtDate(we);
+  } else if (currentView === 'day') {
+    el.textContent = fmtDate(currentDate);
+  } else {
+    el.textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+}
+
+// ── Week View ─────────────────────────────────────────────────────────────────
+
+function renderWeek() {
+  const ws = getWeekStart(currentDate);
+  const days = Array.from({length:7}, (_,i) => addDays(ws, i));
+  const HOURS = [];
+  for (let h = 7; h <= 21; h++) HOURS.push(h);
+
+  let html = '<div class="cal-week-grid">';
+  // Header
+  html += '<div class="cal-corner"></div>';
+  days.forEach(d => {
+    const iso = isoOf(d);
+    const isToday = iso === TODAY_ISO;
+    html += `<div class="cal-day-head${isToday?' today':''}">
+      <div class="day-name">${dayName(d)}</div>
+      <div class="day-num">${d.getDate()}</div>
+    </div>`;
+  });
+
+  // Hour rows
+  HOURS.forEach(h => {
+    html += `<div class="cal-hour-label">${fmtHour(h)}</div>`;
+    days.forEach(d => {
+      const iso = isoOf(d);
+      const daySlots = slotsForDate(iso).filter(s => timeToHour(s.start) === h);
+      const isInterviewer = USER_ROLE === 'interviewer' || USER_ROLE === 'admin';
+      html += `<div class="cal-cell${isInterviewer?' clickable':''}" data-date="${iso}" data-hour="${String(h).padStart(2,'0')}:00">`;
+      daySlots.forEach(s => {
+        html += slotChip(s);
+      });
+      html += '</div>';
+    });
+  });
+  html += '</div>';
+
+  document.getElementById('cal-body').innerHTML = html;
+  attachCellListeners();
+}
+
+function slotChip(s) {
+  if (s.booked) {
+    const label = s.session_type ? typeLabel(s.session_type) : 'Booked';
+    return `<div class="slot-chip slot-chip-booked" title="${s.interviewer} · ${label}">${s.start} ${label}</div>`;
+  }
+  if (USER_ROLE === 'client') {
+    return `<div class="slot-chip slot-chip-avail" onclick='openBookingModal(${JSON.stringify(s)})' title="Book with ${s.interviewer}">${s.start} · ${s.interviewer}</div>`;
+  }
+  return `<div class="slot-chip slot-chip-avail" title="Available · ${s.interviewer}">${s.start} Available</div>`;
+}
+
+// ── Day View ──────────────────────────────────────────────────────────────────
+
+function renderDay() {
+  const iso = isoOf(currentDate);
+  const daySlots = slotsForDate(iso).sort((a,b) => a.start.localeCompare(b.start));
+
+  let html = '<div style="padding:1rem;">';
+  if (daySlots.length === 0) {
+    html += `<div class="empty-day"><div style="font-size:2.5rem;margin-bottom:0.75rem;">&#128197;</div><p style="margin:0;font-size:0.9rem;">No slots available on this day.</p>`;
+    if (USER_ROLE === 'interviewer' || USER_ROLE === 'admin') {
+      html += `<button class="btn-sv-primary" style="margin-top:1rem;font-size:0.85rem;padding:0.5rem 1.25rem;" onclick="openAddModal('${iso}','09:00')">+ Add a Slot</button>`;
+    }
+    html += '</div>';
+  } else {
+    daySlots.forEach(s => {
+      if (s.booked) {
+        html += `<div class="day-view-slot slot-booked-row">
+          <div class="slot-time-badge">${s.start} – ${s.end}</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:0.9rem;color:var(--navy);">${typeLabel(s.session_type)||'Session'} with ${s.interviewer}</div><div style="font-size:0.8rem;color:var(--gray);">${s.booked_by ? 'Booked by ' + s.booked_by : 'Booked'}</div></div>
+          <span style="font-size:0.78rem;font-weight:700;color:#2563eb;">Booked</span>
+        </div>`;
+      } else if (USER_ROLE === 'client') {
+        html += `<div class="day-view-slot" onclick='openBookingModal(${JSON.stringify(s)})'>
+          <div class="slot-time-badge">${s.start} – ${s.end}</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:0.9rem;color:var(--navy);">Available with ${s.interviewer}</div><div style="font-size:0.8rem;color:var(--gray);">Click to book</div></div>
+          <span style="font-size:0.78rem;font-weight:700;color:#16a34a;">Open</span>
+        </div>`;
+      } else {
+        html += `<div class="day-view-slot">
+          <div class="slot-time-badge">${s.start} – ${s.end}</div>
+          <div style="flex:1;"><div style="font-weight:700;font-size:0.9rem;color:var(--navy);">Available</div><div style="font-size:0.8rem;color:var(--gray);">${s.interviewer}</div></div>
+          <span style="font-size:0.78rem;font-weight:700;color:#16a34a;">Open</span>
+        </div>`;
+      }
+    });
+  }
+  html += '</div>';
+  document.getElementById('cal-body').innerHTML = html;
+}
+
+// ── Month View ────────────────────────────────────────────────────────────────
+
+function renderMonth() {
+  const year = currentDate.getFullYear(), month = currentDate.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const startOffset = (firstDay.getDay() + 6) % 7; // Mon=0
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  let html = '<div class="cal-month-grid">';
+  DAYS.forEach(d => { html += `<div class="cal-month-head">${d}</div>`; });
+
+  // Leading blanks
+  for (let i = 0; i < startOffset; i++) {
+    const d = addDays(firstDay, i - startOffset);
+    const iso = isoOf(d);
+    const slots = slotsForDate(iso);
+    html += `<div class="cal-month-cell other-month" onclick="goToDay('${iso}')">
+      <div class="mday-num">${d.getDate()}</div>
+      ${slots.filter(s=>!s.booked).map(()=>'<span class="mday-dot"></span>').join('')}
+    </div>`;
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateObj = new Date(year, month, d);
+    const iso = isoOf(dateObj);
+    const isToday = iso === TODAY_ISO;
+    const slots = slotsForDate(iso);
+    const avail = slots.filter(s => !s.booked);
+    const booked = slots.filter(s => s.booked);
+    html += `<div class="cal-month-cell${isToday?' today-cell':''}" onclick="goToDay('${iso}')">
+      <div class="mday-num">${d}</div>
+      ${avail.map(()=>'<span class="mday-dot"></span>').join('')}
+      ${booked.map(()=>'<span class="mday-dot mday-dot-booked"></span>').join('')}
+    </div>`;
+  }
+
+  // Trailing blanks
+  const total = startOffset + daysInMonth;
+  const remaining = (7 - (total % 7)) % 7;
+  for (let i = 1; i <= remaining; i++) {
+    const d = new Date(year, month + 1, i);
+    const iso = isoOf(d);
+    html += `<div class="cal-month-cell other-month" onclick="goToDay('${iso}')">
+      <div class="mday-num">${d.getDate()}</div>
+    </div>`;
+  }
+  html += '</div>';
+  document.getElementById('cal-body').innerHTML = html;
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+
+document.getElementById('btn-prev').onclick = function () {
+  if (currentView === 'week') currentDate = addDays(currentDate, -7);
+  else if (currentView === 'day') currentDate = addDays(currentDate, -1);
+  else { currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth()-1, 1); }
+  render();
+};
+document.getElementById('btn-next').onclick = function () {
+  if (currentView === 'week') currentDate = addDays(currentDate, 7);
+  else if (currentView === 'day') currentDate = addDays(currentDate, 1);
+  else { currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 1); }
+  render();
+};
+document.getElementById('btn-today').onclick = function () {
+  currentDate = new Date(TODAY_ISO + 'T00:00:00');
+  render();
+};
+
+document.querySelectorAll('.vt-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    document.querySelectorAll('.vt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentView = btn.dataset.view;
+    render();
+  });
+});
+
+// ── Add Slot Modal ────────────────────────────────────────────────────────────
+
+{% if current_user.role in ('interviewer', 'admin') %}
+document.getElementById('btn-add-slot').onclick = function () {
+  openAddModal(TODAY_ISO, '09:00');
+};
+
+function openAddModal(date, time) {
+  document.getElementById('add-slot-date').value = date || TODAY_ISO;
+  document.getElementById('add-slot-start').value = time || '09:00';
+  const [h, m] = (time || '09:00').split(':').map(Number);
+  const endH = String(h + 1).padStart(2,'0');
+  document.getElementById('add-slot-end').value = endH + ':' + String(m).padStart(2,'0');
+  document.getElementById('add-slot-modal').classList.remove('hidden');
+}
+{% endif %}
+
+function attachCellListeners() {
+  {% if current_user.role in ('interviewer', 'admin') %}
+  document.querySelectorAll('.cal-cell.clickable').forEach(function (cell) {
+    cell.addEventListener('click', function (e) {
+      if (e.target !== cell) return; // only blank area
+      openAddModal(cell.dataset.date, cell.dataset.hour);
+    });
+  });
+  {% endif %}
+}
+
+// ── Booking Modal ─────────────────────────────────────────────────────────────
+
+{% if current_user.role == 'client' %}
+function openBookingModal(slot) {
+  const info = document.getElementById('bm-slot-info');
+  info.innerHTML = `<p><strong>${slot.interviewer}</strong> &nbsp;&#183;&nbsp; ${slot.date} &nbsp;&#183;&nbsp; ${slot.start} – ${slot.end}</p>`;
+  const form = document.getElementById('booking-form');
+  form.action = BOOK_BASE + slot.id;
+  document.getElementById('bm-session-type').value = 'mock_interview';
+  document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector('[data-type="mock_interview"]').classList.add('selected');
+  document.getElementById('booking-modal').classList.remove('hidden');
+}
+
+function selectType(el) {
+  if (el.classList.contains('disabled')) return;
+  document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('bm-session-type').value = el.dataset.type;
+}
+{% endif %}
+
+// ── Go to day ─────────────────────────────────────────────────────────────────
+
+function goToDay(iso) {
+  currentDate = new Date(iso + 'T00:00:00');
+  currentView = 'day';
+  document.querySelectorAll('.vt-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-view="day"]').classList.add('active');
+  render();
+}
+
+// ── Close modal ───────────────────────────────────────────────────────────────
+
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+document.querySelectorAll('.modal-overlay').forEach(function (m) {
+  m.addEventListener('click', function (e) {
+    if (e.target === m) m.classList.add('hidden');
+  });
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+render();
+</script>
 {% endblock %}

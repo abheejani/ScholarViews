@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(256), nullable=False)
     role = db.Column(db.String(20), nullable=False, default='client')  # client, interviewer, admin
     session_credits = db.Column(db.Integer, default=0)
+    mentoring_credits = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     __table_args__ = (

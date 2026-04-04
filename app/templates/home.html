@@ -80,10 +80,11 @@
           <a href="{{ url_for('main.pricing') }}" class="btn-hero-s">See Pricing</a>
         </div>
       </div>
-      <div class="col-lg-6 d-none d-lg-flex justify-content-center orbit-section">
-        <div id="orbit-canvas">
-          <div class="orbit-ring-el" style="width:220px;height:220px;"></div>
-          <div class="orbit-center-el">Mag 7</div>
+      <div class="col-lg-6 d-none d-lg-flex justify-content-center align-items-center">
+        <div id="orbit-stage" style="position:relative;width:420px;height:200px;">
+          <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+            <path id="orbit-path-el" fill="none" stroke="rgba(165,180,252,0.2)" stroke-width="1.5" stroke-dasharray="8,5"/>
+          </svg>
         </div>
       </div>
     </div>
@@ -199,7 +200,7 @@
 
 <section class="cta-banner">
   <div class="container">
-    <h2>Ready to land that internship?</h2>
+    <h2>Ready to land your next role?</h2>
     <p>Join students already using ScholarViews to prep smarter with engineers who have been exactly where you are.</p>
     <a href="{{ url_for('auth.signup') }}" class="btn-hero-p">Create Your Free Account</a>
   </div>
@@ -208,40 +209,50 @@
 
 {% block scripts %}
 <script>
-(function() {
+(function () {
   var companies = [
-    { abbr: 'AAPL', bg: '#1d1d1f' },
-    { abbr: 'MSFT', bg: '#0078d4' },
-    { abbr: 'GOOG', bg: '#4285f4' },
-    { abbr: 'AMZN', bg: '#ff9900' },
-    { abbr: 'META', bg: '#0866ff' },
-    { abbr: 'NVDA', bg: '#76b900' },
-    { abbr: 'TSLA', bg: '#cc0000' },
+    'apple.com', 'microsoft.com', 'google.com', 'amazon.com',
+    'meta.com', 'nvidia.com', 'tesla.com'
   ];
-  var canvas = document.getElementById('orbit-canvas');
-  if (!canvas) return;
-  var cx = 150, cy = 150, radius = 110;
-  var logos = [];
-  companies.forEach(function(c) {
-    var el = document.createElement('div');
-    el.className = 'orbit-logo-el';
-    el.style.background = c.bg;
-    el.textContent = c.abbr;
-    canvas.appendChild(el);
-    logos.push(el);
+  var stage = document.getElementById('orbit-stage');
+  if (!stage) return;
+
+  var W = 420, H = 200, cx = W / 2, cy = H / 2, a = 130, LOGO = 40;
+
+  function lemnPos(t) {
+    var s = Math.sin(t), c = Math.cos(t), d = 1 + s * s;
+    return { x: cx + a * Math.SQRT2 * c / d, y: cy + a * Math.SQRT2 * s * c / d };
+  }
+
+  // Draw path
+  var pathEl = document.getElementById('orbit-path-el');
+  var pts = [];
+  for (var t = 0; t <= Math.PI * 2 + 0.05; t += 0.025) {
+    var p = lemnPos(t);
+    pts.push(p.x.toFixed(1) + ',' + p.y.toFixed(1));
+  }
+  pathEl.setAttribute('d', 'M' + pts.join('L'));
+
+  // Logo elements
+  var logoEls = companies.map(function (domain) {
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'position:absolute;width:' + LOGO + 'px;height:' + LOGO + 'px;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,0.28);';
+    var img = document.createElement('img');
+    img.src = 'https://logo.clearbit.com/' + domain;
+    img.style.cssText = 'width:100%;height:100%;object-fit:contain;padding:5px;';
+    wrap.appendChild(img);
+    stage.appendChild(wrap);
+    return wrap;
   });
-  var start = null;
+
+  var n = companies.length, speed = 0.12, startTs = null;
   function frame(ts) {
-    if (!start) start = ts;
-    var t = (ts - start) / 1000;
-    var speed = 0.25;
-    logos.forEach(function(el, i) {
-      var base = (i / companies.length) * Math.PI * 2;
-      var angle = base + t * speed * Math.PI * 2;
-      var x = cx + radius * Math.cos(angle) - 22;
-      var y = cy + radius * Math.sin(angle) - 22;
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
+    if (!startTs) startTs = ts;
+    var elapsed = (ts - startTs) / 1000;
+    logoEls.forEach(function (el, i) {
+      var pos = lemnPos((i / n) * Math.PI * 2 + elapsed * speed);
+      el.style.left = (pos.x - LOGO / 2) + 'px';
+      el.style.top  = (pos.y - LOGO / 2) + 'px';
     });
     requestAnimationFrame(frame);
   }
